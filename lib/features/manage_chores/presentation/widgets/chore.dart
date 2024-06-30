@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:to_do_app/constants/text.dart';
+import 'package:to_do_app/features/manage_chores/domain/chore_list_provider.dart';
 import 'package:to_do_app/utils/format.dart';
 
-import '../../../../models/chore.dart';
+import 'package:to_do_app/models/chore.dart';
+import 'package:to_do_app/utils/logs.dart';
 
 class ChoreWidget extends StatefulWidget {
   final Chore chore;
@@ -14,22 +15,26 @@ class ChoreWidget extends StatefulWidget {
 }
 
 class _ChoreWidgetState extends State<ChoreWidget> {
-  final log = Logger(
-    printer: PrettyPrinter(),
-    level: Level.debug,
-  );
   double offset = 0;
+
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: ValueKey(widget.chore.hashCode),
       confirmDismiss: (DismissDirection direction) async {
         if (direction == DismissDirection.endToStart) {
-          log.d('${widget.chore.hashCode} deleted');
+          Logs.log('${widget.chore.hashCode} deleted');
+          ChoreListProvider.of(context)
+            ..removeChore(widget.chore)
+            ..refresh();
+          return Future.value(true);
         } else {
-          log.d('${widget.chore.hashCode} confirmed');
+          Logs.log('${widget.chore.hashCode} confirmed');
+          widget.chore.isDone = !widget.chore.isDone;
+          ChoreListProvider.of(context).updateChore(widget.chore);
+          ChoreListProvider.of(context).refresh();
+          return Future.value(false);
         }
-        return Future.value(false);
       },
       onUpdate: (details) {
         offset = details.progress;
@@ -37,7 +42,7 @@ class _ChoreWidgetState extends State<ChoreWidget> {
       },
       dismissThresholds: const {
         DismissDirection.endToStart: 0.2,
-        DismissDirection.startToEnd: 0.2
+        DismissDirection.startToEnd: 0.2,
       },
       background: Container(
         color: Colors.green,
@@ -62,19 +67,21 @@ class _ChoreWidgetState extends State<ChoreWidget> {
               flex: 1,
               child: widget.chore.isDone
                   ? const Icon(Icons.check_box, color: Colors.green)
-                  : Icon(Icons.check_box_outline_blank,
+                  : Icon(
+                      Icons.check_box_outline_blank,
                       color: widget.chore.priority == Priority.high
                           ? Colors.red
-                          : Colors.grey),
+                          : Colors.grey,
+                    ),
             ),
             Expanded(
               flex: 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _getChore(context, widget.chore),
+                  _ChoreTextWidget(chore: widget.chore),
                   if (widget.chore.deadline != null)
-                    Text(getFormattedDate(widget.chore.deadline!))
+                    Text(getFormattedDate(widget.chore.deadline!)),
                 ],
               ),
             ),
@@ -86,67 +93,77 @@ class _ChoreWidgetState extends State<ChoreWidget> {
   }
 }
 
-Widget _getChore(BuildContext context, Chore chore) {
-  final colors = Theme.of(context).colorScheme;
-  if (chore.isDone) {
-    return Text(
-      chore.name,
-      style: TextOption.getCustomStyle(
+class _ChoreTextWidget extends StatelessWidget {
+  const _ChoreTextWidget({required this.chore});
+  final Chore chore;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    if (chore.isDone) {
+      return Text(
+        chore.name,
+        style: TextOption.getCustomStyle(
           style: TextStyles.body,
           color: colors.onSurface,
-          decoration: TextDecoration.lineThrough),
-      overflow: TextOverflow.ellipsis,
-      maxLines: 3,
-    );
-  }
+          decoration: TextDecoration.lineThrough,
+        ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 3,
+      );
+    }
 
-  if (chore.priority == Priority.high) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Icon(Icons.priority_high_outlined, color: colors.error),
-        Expanded(
-          child: Text(
-            chore.name,
-            style: TextOption.getCustomStyle(
-                style: TextStyles.body, color: colors.onBackground),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 3,
+    switch (chore.priority) {
+      case Priority.none:
+        return Text(
+          chore.name,
+          style: TextOption.getCustomStyle(
+            style: TextStyles.body,
+            color: colors.onBackground,
           ),
-        ),
-      ],
-    );
+          overflow: TextOverflow.ellipsis,
+          maxLines: 3,
+        );
+      case Priority.low:
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.arrow_downward_outlined,
+            ),
+            Expanded(
+              child: Text(
+                chore.name,
+                style: TextOption.getCustomStyle(
+                  style: TextStyles.body,
+                  color: colors.onBackground,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+              ),
+            ),
+          ],
+        );
+      case Priority.high:
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(Icons.priority_high_outlined, color: colors.error),
+            Expanded(
+              child: Text(
+                chore.name,
+                style: TextOption.getCustomStyle(
+                  style: TextStyles.body,
+                  color: colors.onBackground,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+              ),
+            ),
+          ],
+        );
+    }
   }
-
-  if (chore.priority == Priority.low) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const Icon(
-          Icons.arrow_downward_outlined,
-        ),
-        Expanded(
-          child: Text(
-            chore.name,
-            style: TextOption.getCustomStyle(
-                style: TextStyles.body, color: colors.onBackground),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 3,
-          ),
-        ),
-      ],
-    );
-  }
-
-  return Text(
-    chore.name,
-    style: TextOption.getCustomStyle(
-      style: TextStyles.body,
-      color: colors.onBackground,
-    ),
-    overflow: TextOverflow.ellipsis,
-    maxLines: 3,
-  );
 }

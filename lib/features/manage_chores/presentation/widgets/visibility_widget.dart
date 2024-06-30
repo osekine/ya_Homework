@@ -10,9 +10,10 @@ class VisibilityWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = ChoreListProvider.of(context);
     return GestureDetector(
-        onTap: () => provider.onToggleVisible(),
-        child: provider.isDoneVisible
-            ? const Icon(Icons.visibility_outlined)
-            : const Icon(Icons.visibility_off_outlined));
+      onTap: () => provider.onToggleVisible(),
+      child: provider.isDoneVisible
+          ? const Icon(Icons.visibility_outlined)
+          : const Icon(Icons.visibility_off_outlined),
+    );
   }
 }

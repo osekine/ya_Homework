@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/constants/text.dart';
 import 'package:to_do_app/features/manage_chores/domain/chore_list_provider.dart';
-
+import 'package:to_do_app/generated/l10n.dart';
 import 'visibility_widget.dart';
 
 class ChoreTitleAppbar extends StatefulWidget {
@@ -14,16 +14,21 @@ class ChoreTitleAppbar extends StatefulWidget {
 }
 
 class _ChoreTitleAppbarState extends State<ChoreTitleAppbar> {
+  ScrollController? controller;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    controller ??= ChoreListProvider.of(context).scrollController;
+    ChoreListProvider.of(context).tryAddScrollListener(() {
+      if (controller!.offset < 100) {
+        setState(() {});
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = ChoreListProvider.of(context).scrollController;
-    if (!controller.hasListeners) {
-      controller.addListener(() {
-        if (controller.offset < 100) {
-          setState(() {});
-        }
-      });
-    }
     final theme = Theme.of(context);
     return SliverAppBar(
       surfaceTintColor: theme.colorScheme.surface,
@@ -46,29 +51,30 @@ class _ChoreTitleAppbarState extends State<ChoreTitleAppbar> {
                 children: [
                   Positioned(
                     left: 0,
-                    bottom: controller.hasClients
-                        ? (20 - controller.offset).clamp(0, 20)
+                    bottom: controller!.hasClients
+                        ? (20 - controller!.offset).clamp(0, 20)
                         : 20,
                     child: Text(
-                      'Мои дела',
+                      S.of(context).title,
                       style: TextOption.getCustomStyle(
-                          style: TextStyles.title,
-                          color: theme.colorScheme.onBackground),
+                        style: TextStyles.title,
+                        color: theme.colorScheme.onBackground,
+                      ),
                     ),
                   ),
                   Opacity(
-                    opacity: controller.hasClients
-                        ? (1 - controller.offset / 10).clamp(0, 1)
+                    opacity: controller!.hasClients
+                        ? (1 - controller!.offset / 10).clamp(0, 1)
                         : 1,
                     child: Text(
-                      'Выполнено дел - ${ChoreListProvider.of(context).doneCount}',
+                      '${S.of(context).doneChores}${ChoreListProvider.of(context).doneCount}',
                       style: theme.textTheme.titleSmall,
                     ),
                   ),
                 ],
               ),
             ),
-            const Expanded(flex: 1, child: VisibilityWidget())
+            const Expanded(flex: 1, child: VisibilityWidget()),
           ],
         ),
       ),
