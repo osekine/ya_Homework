@@ -20,7 +20,7 @@ class NetworkDataSource<T> implements IDataSource<T> {
   Future<List<T>?> getData() async {
     data = await _proxy.load();
     revision = _proxy.revision;
-    return data ?? [];
+    return data;
   }
 
   @override
@@ -30,8 +30,8 @@ class NetworkDataSource<T> implements IDataSource<T> {
   }
 
   @override
-  void sync() {
-    _proxy.syncronize(data!);
+  Future<void> sync() async {
+    await _proxy.syncronize(data!);
   }
 
   @override
@@ -84,7 +84,7 @@ class DioProxy<T> {
     } catch (e) {
       Logs.elog('$e');
     }
-    return Future.value(loadedData ?? []);
+    return Future.value(loadedData);
   }
 
   void save(T data) async {
@@ -133,7 +133,11 @@ class DioProxy<T> {
     }
   }
 
-  void syncronize(List<T> data) async {
+  Future<void> syncronize(List<T> data) async {
+    //TODO: патч работает по принципу есть/нет элемента, не отслеживает его изменения
+    //Варианты:
+    //1. ввести список расхождений при синхронизации и вызывать update() для каждого
+    //2. при любых изменениях создавать новый элемент на основе старого и всегда делать патч
     Logs.log('NETWORK syncronizing...');
     final body = jsonEncode(data);
     Logs.log(body);

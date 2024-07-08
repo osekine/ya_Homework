@@ -21,15 +21,12 @@ class _ChoreWidgetState extends State<ChoreWidget> {
   Future<bool?> _onConfirm(DismissDirection direction) async {
     if (direction == DismissDirection.endToStart) {
       Logs.log('${widget.chore.hashCode} deleted');
-      ChoreListProvider.of(context)
-        ..removeChore(widget.chore)
-        ..refresh();
+      ChoreListProvider.of(context).removeChore(widget.chore);
       return Future.value(true);
     } else {
       Logs.log('${widget.chore.hashCode} confirmed');
       widget.chore.isDone = !widget.chore.isDone;
       ChoreListProvider.of(context).updateChore(widget.chore);
-      ChoreListProvider.of(context).refresh();
       return Future.value(false);
     }
   }

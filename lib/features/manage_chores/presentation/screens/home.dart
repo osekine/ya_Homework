@@ -51,29 +51,41 @@ class _HomeScreenState extends State<HomeScreen> {
       client: _model,
       isDoneVisible: isDoneVisible,
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            Logs.log('Pushed to NewChoreScreen');
-            final newChore = await Navigator.of(context).push<Chore?>(
-              MaterialPageRoute(
-                builder: ((context) => const NewChoreScreen()),
-              ),
+        floatingActionButton: Builder(
+          //Билдер нужен для вызова addChore() и синхронизации дел при добавлении через FAB
+          builder: (context) {
+            return FloatingActionButton(
+              onPressed: () async {
+                Logs.log('Pushed to NewChoreScreen');
+                final newChore = await Navigator.of(context).push<Chore?>(
+                  MaterialPageRoute(
+                    builder: ((context) => const NewChoreScreen()),
+                  ),
+                );
+                Logs.log(newChore?.name ?? 'No new chore');
+                if (newChore != null) {
+                  setState(() {
+                    ChoreListProvider.of(context).addChore(newChore);
+                  });
+                }
+              },
+              child: const Icon(Icons.add),
             );
-            Logs.log(newChore?.name ?? 'No new chore');
-            if (newChore != null) {
-              setState(() {
-                _model.add(newChore);
-              });
-            }
           },
-          child: const Icon(Icons.add),
         ),
-        body: CustomScrollView(
-          controller: _controller,
-          slivers: const [
-            ChoreTitleAppbar(),
-            ChoreListBodyWidget(),
-          ],
+        body: RefreshIndicator(
+          onRefresh: () async => _model.sync(),
+          notificationPredicate: (notification) {
+            return notification.depth >= 0;
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _controller,
+            slivers: const [
+              ChoreTitleAppbar(),
+              ChoreListBodyWidget(),
+            ],
+          ),
         ),
       ),
     );

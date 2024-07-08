@@ -31,7 +31,7 @@ class LocalDataSource<T> implements IDataSource<T> {
   }
 
   @override
-  void sync() {
+  Future<void> sync() async {
     Logs.log('LOCAL Syncing...');
     revision = revision + 1;
     _proxy.save(data ?? [], revision);

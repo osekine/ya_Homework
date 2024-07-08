@@ -40,14 +40,14 @@ class ClientModel<T> implements IDataSource<T> {
     }
 
     //Проверка на совпадение версии. Если network отстает - синхронизируем с local и наоборот
-    if (networkData?.isNotEmpty ?? false) {
+    if (networkData != null) {
       if (_localStorage?.revision != null) {
         if (_localStorage!.revision > _networkStorage!.revision) {
           _networkStorage!.data = List.from(localData as Iterable);
-          _networkStorage!.sync();
+          await _networkStorage!.sync();
         } else {
           _localStorage!.data = List.from(networkData as Iterable);
-          _localStorage!.sync();
+          await _localStorage!.sync();
         }
         _localStorage!.revision = _networkStorage!.revision;
       }
@@ -71,8 +71,8 @@ class ClientModel<T> implements IDataSource<T> {
   }
 
   @override
-  void sync() {
-    _localStorage?.sync();
+  Future<void> sync() async {
+    await getData();
   }
 
   @override
