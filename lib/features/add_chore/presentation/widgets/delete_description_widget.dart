@@ -7,7 +7,7 @@ class DeleteDescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = AddChoreProvider.of(context);
+    final model = NewChoreScreenState.of(context);
     return TextButton.icon(
       style: TextButton.styleFrom(
         shape: const RoundedRectangleBorder(

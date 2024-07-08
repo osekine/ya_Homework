@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/models/chore.dart';
+import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
+import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/client.dart';
 
 /*
@@ -9,7 +10,7 @@ import 'package:to_do_app/features/manage_chores/data/client.dart';
   visibility обновляется при изменении состояния isDoneVisible
 */
 class ChoreListProvider extends InheritedWidget {
-  final ClientModel<Chore> client;
+  final IDataSource<Chore> client;
   final bool isDoneVisible;
   final ScrollController scrollController;
   final VoidCallback onToggleVisible;

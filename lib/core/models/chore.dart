@@ -77,12 +77,14 @@ class Chore {
     DateTime? deadline,
     bool? isDone,
     Priority? priority,
+    String? id,
   }) {
     return Chore(
       name: name ?? this.name,
       deadline: deadline ?? this.deadline,
       isDone: isDone ?? this.isDone,
       priority: priority ?? this.priority,
+      id: id ?? this.id,
     );
   }
 
@@ -98,29 +100,3 @@ class Chore {
   @override
   int get hashCode => id.hashCode;
 }
-
-// List<Chore> dumbell = [
-//   Chore(
-//     name: 'Купить гирю',
-//     isDone: true,
-//     priority: Priority.high,
-//   ),
-//   Chore(name: 'Купить гирю'),
-//   Chore(name: 'Купить гирю'),
-//   Chore(name: 'Купить большую гирю', priority: Priority.high),
-//   Chore(name: 'Купил гирю', isDone: true),
-//   Chore(name: 'Купить маленькую гирю', priority: Priority.low),
-//   Chore(name: 'Купить гирю'),
-//   Chore(name: 'Купить гирю'),
-//   Chore(name: 'Купить гирю'),
-//   Chore(name: 'Купить гирю', isDone: true),
-//   Chore(
-//     priority: Priority.low,
-//     name:
-//         'Мне пора прекратить покупать гири, но я не могу остановиться. Мне кажется, у меня есть проблемы',
-//   ),
-//   Chore(name: 'Купить гирю', isDone: true),
-//   Chore(name: 'Купить гирю'),
-//   Chore(name: 'Купить гирю'),
-//   Chore(name: 'Купить гирю'),
-// ];

@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/features/manage_chores/domain/chore_list_provider.dart';
+import 'package:get_it/get_it.dart';
+import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
 import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
 import 'package:to_do_app/features/manage_chores/presentation/widgets/chore_title_appbar.dart';
 import 'package:to_do_app/features/manage_chores/presentation/widgets/chore.dart';
 import 'package:to_do_app/generated/l10n.dart';
-import 'package:to_do_app/models/chore.dart';
+import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/client.dart';
-import 'package:to_do_app/utils/logs.dart';
+import 'package:to_do_app/core/utils/logs.dart';
 
 part 'package:to_do_app/features/manage_chores/presentation/widgets/chore_list_body_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.model});
+  const HomeScreen({super.key});
 
-  final ClientModel<Chore> model;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   late final ScrollController _controller;
+  late final ClientModel<Chore> _model;
   bool isDoneVisible = false;
 
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
+    _model = GetIt.I<ClientModel<Chore>>();
   }
 
   void toggleVisible() {
@@ -36,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void refresh() {
-    widget.model.sync();
+    _model.sync();
     setState(() {});
   }
 
@@ -46,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       refresh: refresh,
       onToggleVisible: toggleVisible,
       scrollController: _controller,
-      client: widget.model,
+      client: _model,
       isDoneVisible: isDoneVisible,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -60,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Logs.log(newChore?.name ?? 'No new chore');
             if (newChore != null) {
               setState(() {
-                widget.model.add(newChore);
+                _model.add(newChore);
               });
             }
           },

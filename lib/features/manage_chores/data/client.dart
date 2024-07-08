@@ -1,4 +1,4 @@
-import '../../../utils/logs.dart';
+import '../../../core/utils/logs.dart';
 import 'i_data_source.dart';
 
 class ClientModel<T> implements IDataSource<T> {
@@ -77,6 +77,7 @@ class ClientModel<T> implements IDataSource<T> {
 
   @override
   void update(T item, String id) {
+    data?[data!.indexOf(item)] = item;
     _localStorage?.update(item, id);
     _networkStorage?.update(item, id);
   }

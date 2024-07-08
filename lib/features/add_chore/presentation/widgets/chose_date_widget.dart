@@ -28,17 +28,19 @@ class _ChoseDateWidgetState extends State<ChoseDateWidget> {
     );
     setState(() {
       date = newDate;
-      if (date != null) AddChoreProvider.of(context).changeDate(date!);
+      if (date != null) NewChoreScreenState.of(context).changeDate(date!);
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    bool newCanSwitch = AddChoreProvider.of(context).hasChore;
+    bool newCanSwitch = NewChoreScreenState.of(context).hasChore;
     if (newCanSwitch != canSwitch) {
-      canSwitch = newCanSwitch;
-      chooseDate(false);
+      setState(() {
+        canSwitch = newCanSwitch;
+        date = NewChoreScreenState.of(context).dateTime;
+      });
     }
   }
 

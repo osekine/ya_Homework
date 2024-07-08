@@ -42,16 +42,17 @@ dependencies:
   http: ^1.2.1
   shared_preferences: ^2.2.3
   device_info_plus: ^10.1.0
-  intl: ^0.18.1
+  intl: ^0.19.0
   uuid: ^4.4.0
   permission_handler: ^11.3.1
+  get_it: ^7.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: ^6.8.0
   build_runner: ^2.4.9
-
+  
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

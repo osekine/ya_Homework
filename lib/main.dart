@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:to_do_app/constants/themes.dart';
+import 'package:get_it/get_it.dart';
+import 'package:to_do_app/core/constants/themes.dart';
 import 'package:to_do_app/features/manage_chores/presentation/screens/home.dart';
-import 'package:to_do_app/models/chore.dart';
+import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/client.dart';
-import 'package:to_do_app/utils/logs.dart';
+import 'package:to_do_app/core/utils/logs.dart';
 
 import 'generated/l10n.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  GetIt.I.registerSingleton(ClientModel<Chore>());
   Logs.log('App started');
   runApp(const MyApp());
 }
@@ -26,7 +29,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    model = ClientModel<Chore>();
+    model = GetIt.I<ClientModel<Chore>>();
   }
 
   @override
@@ -45,7 +48,7 @@ class _MyAppState extends State<MyApp> {
       home: FutureBuilder(
         future: model.getData(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) return HomeScreen(model: model);
+          if (snapshot.hasData) return const HomeScreen();
           return const Center(child: CircularProgressIndicator());
         },
       ),

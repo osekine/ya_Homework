@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/constants/text.dart';
-import 'package:to_do_app/features/add_chore/domain/add_chore_provider.dart';
+import 'package:to_do_app/core/constants/text.dart';
+import 'package:to_do_app/features/add_chore/presentation/inherits/add_chore_provider.dart';
 import 'package:to_do_app/generated/l10n.dart';
-import 'package:to_do_app/models/chore.dart';
-import 'package:to_do_app/utils/format.dart';
-import 'package:to_do_app/utils/logs.dart';
+import 'package:to_do_app/core/models/chore.dart';
+import 'package:to_do_app/core/utils/format.dart';
+import 'package:to_do_app/core/utils/logs.dart';
 
 part '../widgets/chose_date_widget.dart';
 part '../widgets/description_widget.dart';
@@ -12,13 +12,18 @@ part '../widgets/priority_widget.dart';
 part '../widgets/delete_description_widget.dart';
 
 class NewChoreScreen extends StatefulWidget {
-  const NewChoreScreen({super.key});
+  const NewChoreScreen({
+    super.key,
+    this.chore,
+  });
+
+  final Chore? chore;
 
   @override
-  State<NewChoreScreen> createState() => _NewChoreScreenState();
+  State<NewChoreScreen> createState() => NewChoreScreenState();
 }
 
-class _NewChoreScreenState extends State<NewChoreScreen> {
+class NewChoreScreenState extends State<NewChoreScreen> {
   final textController = TextEditingController();
 
   //Нужно для блокировки выбора приоритета, даты и удаления,
@@ -50,20 +55,27 @@ class _NewChoreScreenState extends State<NewChoreScreen> {
           });
   }
 
+  static NewChoreScreenState of(BuildContext context) {
+    return AddChoreProvider.of(context).controller;
+  }
+
   @override
   void initState() {
     super.initState();
-    textController.addListener(toggleScreen);
+    textController
+      ..addListener(toggleScreen)
+      ..text = widget.chore?.name ?? '';
+    dateTime = widget.chore?.deadline;
+    priority = widget.chore?.priority ?? Priority.none;
+
+    hasChore = widget.chore != null;
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return AddChoreProvider(
-      changePriority: changePriority,
-      changeDate: changeDate,
-      hasChore: hasChore,
-      textController: textController,
+      controller: this,
       child: Scaffold(
         appBar: AppBar(
           elevation: 8,

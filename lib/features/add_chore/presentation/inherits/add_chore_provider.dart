@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/models/chore.dart';
+import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
+import 'package:to_do_app/core/models/chore.dart';
 
 class AddChoreProvider extends InheritedWidget {
   const AddChoreProvider({
     super.key,
     required super.child,
-    required this.hasChore,
-    required this.textController,
-    this.date,
-    this.priority = Priority.none,
-    required this.changeDate,
-    required this.changePriority,
+    required this.controller,
   });
 
-  final Function(DateTime) changeDate;
-  final Function(Priority) changePriority;
-  final bool hasChore;
-  final TextEditingController textController;
-  final DateTime? date;
-  final Priority priority;
+  final NewChoreScreenState controller;
 
   @override
   bool updateShouldNotify(AddChoreProvider oldWidget) {
-    return hasChore != oldWidget.hasChore;
+    return controller.hasChore != oldWidget.controller.hasChore;
   }
 
   static AddChoreProvider? maybeOf(
@@ -37,11 +28,11 @@ class AddChoreProvider extends InheritedWidget {
       maybeOf(context, listen: true) as AddChoreProvider;
 
   Chore? getChore() {
-    return hasChore
+    return controller.hasChore
         ? Chore(
-            name: textController.text,
-            deadline: date,
-            priority: priority,
+            name: controller.textController.text,
+            deadline: controller.dateTime,
+            priority: controller.priority,
           )
         : null;
   }

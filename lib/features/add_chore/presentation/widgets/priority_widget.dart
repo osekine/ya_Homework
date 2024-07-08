@@ -9,8 +9,8 @@ class PriorityWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return DropdownMenu(
-      onSelected: (value) =>
-          AddChoreProvider.of(context).changePriority(value ?? Priority.none),
+      onSelected: (value) => NewChoreScreenState.of(context)
+          .changePriority(value ?? Priority.none),
       label: Text(S.of(context).importance),
       inputDecorationTheme: InputDecorationTheme(
         border: InputBorder.none,

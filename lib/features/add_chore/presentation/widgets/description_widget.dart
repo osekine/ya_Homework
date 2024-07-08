@@ -11,7 +11,7 @@ class DescriptionWidget extends StatelessWidget {
 
     return TextField(
       onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
-      controller: AddChoreProvider.of(context).textController,
+      controller: NewChoreScreenState.of(context).textController,
       maxLines: null,
       minLines: 5,
       style: TextOption.getCustomStyle(
