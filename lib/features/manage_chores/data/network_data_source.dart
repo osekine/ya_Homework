@@ -1,7 +1,10 @@
 part of 'i_data_source.dart';
 
 class NetworkDataSource<T> implements IDataSource<T> {
-  final DioProxy<T> _proxy = DioProxy();
+  NetworkDataSource([NetworkProxy<T>? proxy]) {
+    _proxy = proxy ?? DioProxy<T>();
+  }
+  late final NetworkProxy<T> _proxy;
 
   @override
   List<T>? data;
@@ -40,9 +43,20 @@ class NetworkDataSource<T> implements IDataSource<T> {
   }
 }
 
-class DioProxy<T> {
+abstract class NetworkProxy<T> {
+  int revision = 0;
+  Future<List<T>> load();
+  Future<void> save(T data);
+  Future<void> delete(String id);
+  Future<void> update(T data, String id);
+  Future<void> syncronize(List<T> list);
+}
+
+class DioProxy<T> implements NetworkProxy<T> {
   final String baseUrl = 'https://hive.mrdekk.ru/todo/list';
   final String token = 'Wilwarin';
+
+  @override
   int revision = 0;
 
   final _dio = Dio();
@@ -66,6 +80,7 @@ class DioProxy<T> {
       ),
     );
   }
+  @override
   Future<List<T>> load() async {
     Logs.log('NETWORK Loading...');
     List<T>? loadedData;
@@ -87,7 +102,8 @@ class DioProxy<T> {
     return Future.value(loadedData);
   }
 
-  void save(T data) async {
+  @override
+  Future<void> save(T data) async {
     Logs.log('NETWORK Saving...');
     final body = jsonEncode(
       data,
@@ -107,7 +123,8 @@ class DioProxy<T> {
     }
   }
 
-  void update(T data, String id) async {
+  @override
+  Future<void> update(T data, String id) async {
     Logs.log('NETWORK Updating...');
     final body = jsonEncode(
       data,
@@ -124,7 +141,8 @@ class DioProxy<T> {
     }
   }
 
-  void delete(String id) async {
+  @override
+  Future<void> delete(String id) async {
     Logs.log('NETWORK Deleting...');
     try {
       await _dio.delete('$baseUrl/$id');
@@ -133,6 +151,7 @@ class DioProxy<T> {
     }
   }
 
+  @override
   Future<void> syncronize(List<T> data) async {
     //TODO: патч работает по принципу есть/нет элемента, не отслеживает его изменения
     //Варианты:
