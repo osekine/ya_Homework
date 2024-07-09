@@ -4,11 +4,12 @@ import 'package:mocktail/mocktail.dart';
 import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 
+import 'mock_behavior/mock_local_behavior.dart';
+
 void main() {
   late IDataSource<Chore> dataSource;
   late final MockLocalStorageProxy<Chore> mockStorage;
-  // int storageRevision = 0;
-  // List<Chore> storageList = [];
+  late final MockLocalBehavior<Chore> mockBehavior;
 
   setUpAll(
     () {
@@ -16,23 +17,18 @@ void main() {
       mockStorage = GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
         MockLocalStorageProxy<Chore>(),
       ) as MockLocalStorageProxy<Chore>;
+      mockBehavior = MockLocalBehavior<Chore>(
+        mockStorage: mockStorage,
+      );
     },
   );
 
   setUp(() {
     dataSource = LocalDataSource<Chore>()..data = [];
-    when(() => mockStorage.load())
-        .thenAnswer((_) async => (mockStorage.rev, mockStorage.list));
-    when(
-      () => mockStorage.save(
-        any(that: isA<List<Chore>>()),
-        any(that: isA<int>()),
-      ),
-    ).thenAnswer((i) async {
-      mockStorage
-        ..list = i.positionalArguments[0] as List<Chore>
-        ..rev = i.positionalArguments[1] as int;
-    });
+
+    mockBehavior
+      ..onLoad()
+      ..onSave();
   });
 
   group('Testing local repository', () {
@@ -46,7 +42,7 @@ void main() {
       //assert
 
       expect(mockStorage.list, [chore]);
-      expect(mockStorage.rev, 1);
+      expect(mockStorage.revision, 1);
     });
 
     test('get data and revision', () async {
@@ -58,7 +54,7 @@ void main() {
 
       //assert
       expect(loadedData, mockStorage.list);
-      expect(rev, mockStorage.rev);
+      expect(rev, mockStorage.revision);
     });
 
     test('get valid data and revision after saving', () async {
@@ -72,7 +68,7 @@ void main() {
 
       //assert
       expect(loadedData, mockStorage.list);
-      expect(rev, mockStorage.rev);
+      expect(rev, mockStorage.revision);
     });
 
     test('remove Chore', () async {
@@ -88,7 +84,7 @@ void main() {
 
       //assert
       expect(loadedData, mockStorage.list);
-      expect(rev, mockStorage.rev);
+      expect(rev, mockStorage.revision);
     });
 
     test('update Chore', () async {
@@ -105,7 +101,7 @@ void main() {
 
       //assert
       expect(loadedData, mockStorage.list);
-      expect(rev, mockStorage.rev);
+      expect(rev, mockStorage.revision);
       expect(mockStorage.list[0].name, 'reckom');
     });
 
@@ -123,13 +119,8 @@ void main() {
 
       //assert
       expect(loadedData, mockStorage.list);
-      expect(rev, mockStorage.rev);
+      expect(rev, mockStorage.revision);
       expect(mockStorage.list.length, 15);
     });
   });
-}
-
-class MockLocalStorageProxy<T> extends Mock implements LocalStorageProxy<T> {
-  List<T> list = [];
-  int rev = 0;
 }

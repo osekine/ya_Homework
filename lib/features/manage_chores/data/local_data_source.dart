@@ -15,6 +15,8 @@ class LocalDataSource<T> implements IDataSource<T> {
   @override
   void add(T item) {
     data?.add(item);
+    data ??= [item];
+
     sync();
   }
 
