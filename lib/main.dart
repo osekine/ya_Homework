@@ -16,7 +16,7 @@ void main() {
   GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
     SharedPreferncesProxy<Chore>(),
   );
-  GetIt.I.registerSingleton<NetworkProxy<Chore>>(DioProxy<Chore>());
+  GetIt.I.registerSingleton<NetworkStorageProxy<Chore>>(DioProxy<Chore>());
   GetIt.I.registerSingleton<IDataSource<Chore>>(ClientModel<Chore>());
 
   Logs.log('App started');

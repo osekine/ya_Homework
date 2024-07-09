@@ -2,9 +2,9 @@ part of 'i_data_source.dart';
 
 class NetworkDataSource<T> implements IDataSource<T> {
   NetworkDataSource() {
-    _proxy = GetIt.I<NetworkProxy<T>>();
+    _proxy = GetIt.I<NetworkStorageProxy<T>>();
   }
-  late final NetworkProxy<T> _proxy;
+  late final NetworkStorageProxy<T> _proxy;
 
   @override
   List<T>? data;
@@ -13,22 +13,37 @@ class NetworkDataSource<T> implements IDataSource<T> {
   int revision = 0;
 
   @override
-  void add(T item) {
+  void add(T item) async {
     data?.add(item);
-    _proxy.save(item);
-    revision = _proxy.revision;
+    Logs.log('NETWORK Saving...');
+    final result = await _proxy.save(item);
+    if (result) {
+      revision = _proxy.revision;
+    } else {
+      ++revision;
+    }
   }
 
   @override
   Future<List<T>?> getData() async {
-    data = await _proxy.load();
-    revision = _proxy.revision;
+    Logs.log('NETWORK Loading...');
+    final newData = await _proxy.load();
+    final newRevision = _proxy.revision;
+    if (newData != null && newRevision < revision) {
+      await sync();
+      revision = newRevision;
+
+      return getData();
+    }
+    data = newData;
+    revision = newRevision;
     return data;
   }
 
   @override
   void remove(T item, String id) {
     data?.remove(item);
+    ++revision;
     _proxy.delete(id);
   }
 
@@ -43,16 +58,16 @@ class NetworkDataSource<T> implements IDataSource<T> {
   }
 }
 
-abstract class NetworkProxy<T> {
+abstract class NetworkStorageProxy<T> {
   int revision = 0;
-  Future<List<T>> load();
-  Future<void> save(T data);
+  Future<List<T>>? load();
+  Future<bool> save(T data);
   Future<void> delete(String id);
   Future<void> update(T data, String id);
   Future<void> syncronize(List<T> list);
 }
 
-class DioProxy<T> implements NetworkProxy<T> {
+class DioProxy<T> implements NetworkStorageProxy<T> {
   final String baseUrl = 'https://hive.mrdekk.ru/todo/list';
   final String token = 'Wilwarin';
 
@@ -82,7 +97,6 @@ class DioProxy<T> implements NetworkProxy<T> {
   }
   @override
   Future<List<T>> load() async {
-    Logs.log('NETWORK Loading...');
     List<T>? loadedData;
     try {
       final Response<String> response = await _dio.get(baseUrl);
@@ -103,8 +117,7 @@ class DioProxy<T> implements NetworkProxy<T> {
   }
 
   @override
-  Future<void> save(T data) async {
-    Logs.log('NETWORK Saving...');
+  Future<bool> save(T data) async {
     final body = jsonEncode(
       data,
       toEncodable: ((nonEncodable) =>
@@ -120,7 +133,9 @@ class DioProxy<T> implements NetworkProxy<T> {
       Logs.log(response.data!);
     } catch (e) {
       Logs.elog('$e');
+      return Future.value(false);
     }
+    return Future.value(true);
   }
 
   @override
