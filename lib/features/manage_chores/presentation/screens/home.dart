@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
 import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
 import 'package:to_do_app/features/manage_chores/presentation/widgets/chore_title_appbar.dart';
@@ -20,14 +21,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final ScrollController _controller;
-  late final ClientModel<Chore> _model;
+  late final IDataSource<Chore> _model;
   bool isDoneVisible = false;
 
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
-    _model = GetIt.I<ClientModel<Chore>>();
+    _model = GetIt.I<IDataSource<Chore>>();
   }
 
   void toggleVisible() {

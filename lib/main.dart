@@ -31,12 +31,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final ClientModel<Chore> model;
+  late final IDataSource<Chore> model;
 
   @override
   void initState() {
     super.initState();
-    model = GetIt.I<ClientModel<Chore>>();
+    model = GetIt.I<IDataSource<Chore>>();
   }
 
   @override

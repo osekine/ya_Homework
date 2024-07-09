@@ -103,8 +103,7 @@ class _ChoreWidgetState extends State<ChoreWidget> {
                     );
                     if (newChore != null) {
                       ChoreListProvider.of(context)
-                        ..updateChore(newChore?.copyWith(id: widget.chore.id))
-                        ..refresh();
+                          .updateChore(newChore?.copyWith(id: widget.chore.id));
                     }
                   },
                   child: Icon(Icons.info_outline),

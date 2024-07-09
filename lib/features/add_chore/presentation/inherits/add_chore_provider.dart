@@ -13,7 +13,7 @@ class AddChoreProvider extends InheritedWidget {
 
   @override
   bool updateShouldNotify(AddChoreProvider oldWidget) {
-    return controller.hasChore != oldWidget.controller.hasChore;
+    return true;
   }
 
   static AddChoreProvider? maybeOf(

@@ -33,7 +33,7 @@ class NewChoreScreenState extends State<NewChoreScreen> {
   bool hasChore = false;
 
   DateTime? dateTime;
-  Priority priority = Priority.none;
+  late Priority priority;
 
   void changeDate(DateTime? newDate) {
     dateTime = newDate;

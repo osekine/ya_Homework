@@ -56,6 +56,7 @@ class ChoreListProvider extends InheritedWidget {
           : null;
 
   void updateChore(Chore chore) {
+    chore.chagedAt = DateTime.now().millisecondsSinceEpoch;
     client.update(chore, chore.id);
     refresh();
   }
