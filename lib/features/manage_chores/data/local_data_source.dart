@@ -1,8 +1,8 @@
 part of 'i_data_source.dart';
 
 class LocalDataSource<T> implements IDataSource<T> {
-  LocalDataSource([LocalStorageProxy<T>? proxy]) {
-    _proxy = proxy ?? SharedPreferncesProxy<T>();
+  LocalDataSource() {
+    _proxy = GetIt.I<LocalStorageProxy<T>>();
   }
   late final LocalStorageProxy<T> _proxy;
 

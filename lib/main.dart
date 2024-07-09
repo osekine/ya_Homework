@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:to_do_app/core/constants/themes.dart';
+import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 import 'package:to_do_app/features/manage_chores/presentation/screens/home.dart';
 import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/client.dart';
@@ -11,7 +12,13 @@ import 'generated/l10n.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  GetIt.I.registerSingleton(ClientModel<Chore>());
+
+  GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
+    SharedPreferncesProxy<Chore>(),
+  );
+  GetIt.I.registerSingleton<NetworkProxy<Chore>>(DioProxy<Chore>());
+  GetIt.I.registerSingleton<IDataSource<Chore>>(ClientModel<Chore>());
+
   Logs.log('App started');
   runApp(const MyApp());
 }

@@ -1,8 +1,8 @@
 part of 'i_data_source.dart';
 
 class NetworkDataSource<T> implements IDataSource<T> {
-  NetworkDataSource([NetworkProxy<T>? proxy]) {
-    _proxy = proxy ?? DioProxy<T>();
+  NetworkDataSource() {
+    _proxy = GetIt.I<NetworkProxy<T>>();
   }
   late final NetworkProxy<T> _proxy;
 

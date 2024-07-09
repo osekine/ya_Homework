@@ -1,24 +1,27 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 
 void main() {
-  late final IDataSource<Chore> dataSource;
+  late IDataSource<Chore> dataSource;
   late final MockLocalStorageProxy<Chore> mockStorage;
   // int storageRevision = 0;
   // List<Chore> storageList = [];
 
   setUpAll(
-    () => registerFallbackValue(Chore(name: 'mocker')),
+    () {
+      registerFallbackValue(Chore(name: 'mocker'));
+      mockStorage = GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
+          MockLocalStorageProxy<Chore>()) as MockLocalStorageProxy<Chore>;
+    },
   );
 
   setUp(() {
-    mockStorage = MockLocalStorageProxy<Chore>();
-    dataSource = LocalDataSource<Chore>(mockStorage)..data = [];
-
+    dataSource = LocalDataSource<Chore>()..data = [];
     when(() => mockStorage.load())
         .thenAnswer((_) async => (mockStorage.rev, mockStorage.list));
     when(
