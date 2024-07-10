@@ -121,5 +121,48 @@ void main() {
       expect(mockNetwork.list?.first.name, chore.name);
       expect(mockNetwork.revision, 2);
     });
+
+    test('saving without connection', () async {
+      //arrange
+      final chore = Chore(name: 'mocker');
+      mockNetworkBehavior.connection = false;
+      client.add(chore);
+
+      //act
+      await client.sync();
+
+      //assert
+      expect(mockLocal.list, [chore]);
+      expect(client.data, [chore]);
+      expect(mockLocal.revision, 1);
+      expect(mockNetwork.list, []);
+    });
+
+    test('load after restore connection', () async {
+      //arrange
+      final chore = Chore(name: 'mocker');
+      mockNetworkBehavior.connection = true;
+      client.add(chore);
+
+      expect(mockNetwork.list!, [chore]);
+
+      //act
+      mockNetworkBehavior.connection = false;
+      for (int i = 0; i < 10; i++) {
+        final newChore = Chore(name: i.toString());
+        client.add(newChore);
+      }
+      mockNetworkBehavior.connection = true;
+      // client.add(Chore(name: '-1'));
+
+      await client.sync();
+
+      //assert
+      expect(mockLocal.list.length, 11);
+      expect(mockNetwork.list?.length, 11);
+      // expect(mockNetwork.list?.last.name, '-1');
+      expect(mockLocal.revision, 11);
+      expect(mockNetwork.revision, 2);
+    });
   });
 }

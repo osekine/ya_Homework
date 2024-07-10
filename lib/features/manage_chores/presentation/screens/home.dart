@@ -7,7 +7,6 @@ import 'package:to_do_app/features/manage_chores/presentation/widgets/chore_titl
 import 'package:to_do_app/features/manage_chores/presentation/widgets/chore.dart';
 import 'package:to_do_app/generated/l10n.dart';
 import 'package:to_do_app/core/models/chore.dart';
-import 'package:to_do_app/features/manage_chores/data/client.dart';
 import 'package:to_do_app/core/utils/logs.dart';
 
 part 'package:to_do_app/features/manage_chores/presentation/widgets/chore_list_body_widget.dart';

@@ -19,8 +19,6 @@ class NetworkDataSource<T> implements IDataSource<T> {
     final result = await _proxy.save(item);
     if (result) {
       revision = _proxy.revision;
-    } else {
-      ++revision;
     }
   }
 
