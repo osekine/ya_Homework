@@ -16,7 +16,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
-      SharedPreferncesProxy<Chore>());
+    SharedPreferncesProxy<Chore>(),
+  );
   GetIt.I.registerSingleton<NetworkStorageProxy<Chore>>(DioProxy<Chore>());
   GetIt.I.registerSingleton<IDataSource<Chore>>(ClientModel<Chore>());
 
@@ -35,13 +36,13 @@ final _router = GoRouter(
           path: 'details/:choreId',
           builder: (context, state) =>
               NewChoreScreen(choreId: state.pathParameters['choreId']),
+          redirect: (context, state) =>
+              '/details/${state.pathParameters['choreId']}',
         ),
         GoRoute(
           path: 'new',
           builder: (context, state) => const NewChoreScreen(),
-          redirect: (context, state) {
-            return '/new';
-          },
+          redirect: (context, state) => '/new',
         ),
       ],
     ),

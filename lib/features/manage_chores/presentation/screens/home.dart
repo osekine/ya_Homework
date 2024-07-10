@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final ScrollController _controller;
   late final IDataSource<Chore> _model;
+  late final Future<List<Chore>?> _data;
   bool isDoneVisible = false;
 
   @override
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _controller = ScrollController();
     _model = GetIt.I<IDataSource<Chore>>();
+    _data = _model.getData();
   }
 
   void toggleVisible() {
@@ -45,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _model.getData(),
+      future: _data,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -57,23 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
             client: _model,
             isDoneVisible: isDoneVisible,
             child: Scaffold(
-              floatingActionButton: Builder(
-                //Билдер нужен для вызова addChore() и синхронизации дел при добавлении через FAB
-                builder: (context) {
-                  return FloatingActionButton(
-                    onPressed: () async {
-                      Logs.log('Pushed to NewChoreScreen');
-                      final newChore = await context.push<Chore?>('/new/');
-                      Logs.log(newChore?.name ?? 'No new chore');
-                      if (newChore != null) {
-                        setState(() {
-                          ChoreListProvider.of(context).addChore(newChore);
-                        });
-                      }
-                    },
-                    child: const Icon(Icons.add),
-                  );
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async {
+                  Logs.log('Pushed to NewChoreScreen');
+                  await context.push('/new');
+                  setState(() {});
                 },
+                child: const Icon(Icons.add),
               ),
               body: RefreshIndicator(
                 onRefresh: () async => _model.sync(),

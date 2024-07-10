@@ -17,18 +17,25 @@ class ChoreWidget extends StatefulWidget {
 
 class _ChoreWidgetState extends State<ChoreWidget> {
   double offset = 0;
+  late ChoreListProvider provider;
 
   Future<bool?> _onConfirm(DismissDirection direction) async {
     if (direction == DismissDirection.endToStart) {
       Logs.log('${widget.chore.hashCode} deleted');
-      ChoreListProvider.of(context).removeChore(widget.chore);
+      provider.removeChore(widget.chore);
       return Future.value(true);
     } else {
       Logs.log('${widget.chore.hashCode} confirmed');
       widget.chore.isDone = !widget.chore.isDone;
-      ChoreListProvider.of(context).updateChore(widget.chore);
+      provider.updateChore(widget.chore);
       return Future.value(false);
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    provider = ChoreListProvider.of(context);
   }
 
   @override
@@ -95,13 +102,15 @@ class _ChoreWidgetState extends State<ChoreWidget> {
                 child: GestureDetector(
                   onTap: () async {
                     // TODO: переделать на Navigator 2.0
-                    final newChore = await context.push<Chore?>(
-                      '/new/${widget.chore.id}',
-                    );
-                    if (newChore != null) {
-                      ChoreListProvider.of(context)
-                          .updateChore(newChore.copyWith(id: widget.chore.id));
-                    }
+                    // final newChore = await context.push<Chore?>(
+                    //   '/details/${widget.chore.id}',
+                    // );
+                    // if (newChore != null) {
+                    //   ChoreListProvider.of(context)
+                    //       .updateChore(newChore.copyWith(id: widget.chore.id));
+                    // }
+                    await context.push('/details/${widget.chore.id}');
+                    provider.refresh();
                   },
                   child: const Icon(Icons.info_outline),
                 ),

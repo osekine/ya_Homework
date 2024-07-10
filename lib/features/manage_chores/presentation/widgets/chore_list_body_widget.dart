@@ -22,12 +22,8 @@ class ChoreListBodyWidget extends StatelessWidget {
                 ? ChoreWidget(provider.choreList[index])
                 : GestureDetector(
                     onTap: () async {
-                      final newChore = await context.push<Chore?>(
-                        '/new/ ',
-                      );
-                      if (newChore != null) {
-                        provider.addChore(newChore);
-                      }
+                      await context.push('/new');
+                      provider.refresh();
                     },
                     child: ListTile(
                       leading: const SizedBox(width: 0, height: 0),

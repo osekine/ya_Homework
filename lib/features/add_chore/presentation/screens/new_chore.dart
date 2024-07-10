@@ -114,7 +114,7 @@ class NewChoreScreenState extends State<NewChoreScreen> {
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       Logs.log('Saved chore');
                       Chore? newChore;
                       if (hasChore) {
@@ -122,7 +122,14 @@ class NewChoreScreenState extends State<NewChoreScreen> {
                           name: textController.text,
                           deadline: dateTime,
                           priority: priority ?? Priority.none,
+                          id: widget.choreId,
                         );
+                        if (widget.choreId == null) {
+                          GetIt.I<IDataSource<Chore>>().add(newChore);
+                        } else {
+                          GetIt.I<IDataSource<Chore>>()
+                              .update(newChore, widget.choreId!);
+                        }
                       }
                       context.pop<Chore?>(newChore);
                     },

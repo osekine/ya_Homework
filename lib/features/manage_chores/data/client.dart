@@ -20,6 +20,7 @@ class ClientModel<T extends Chore> implements IDataSource<T> {
 
   @override
   void add(T item) {
+    // data?.add(item);
     revision = revision + 1;
     Logs.log('Client rev: $revision');
     _localStorage?.add(item);
@@ -68,6 +69,7 @@ class ClientModel<T extends Chore> implements IDataSource<T> {
 
   @override
   void remove(T item, String id) async {
+    data?.remove(item);
     _localStorage?.remove(item, id);
     _networkStorage?.remove(item, id);
   }
@@ -86,6 +88,6 @@ class ClientModel<T extends Chore> implements IDataSource<T> {
 
   @override
   Future<T?> getItem(String? id) async {
-    return _networkStorage?.getItem(id) ?? _localStorage?.getItem(id);
+    return _localStorage?.getItem(id) ?? _networkStorage?.getItem(id);
   }
 }
