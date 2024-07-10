@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:to_do_app/core/constants/text.dart';
-import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
 import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
 import 'package:to_do_app/core/utils/format.dart';
 
@@ -94,19 +94,16 @@ class _ChoreWidgetState extends State<ChoreWidget> {
                 flex: 1,
                 child: GestureDetector(
                   onTap: () async {
-                    //TODO: переделать на Navigator 2.0
-                    final newChore = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            NewChoreScreen(chore: widget.chore),
-                      ),
+                    // TODO: переделать на Navigator 2.0
+                    final newChore = await context.push<Chore?>(
+                      '/new/${widget.chore.id}',
                     );
                     if (newChore != null) {
                       ChoreListProvider.of(context)
-                          .updateChore(newChore?.copyWith(id: widget.chore.id));
+                          .updateChore(newChore.copyWith(id: widget.chore.id));
                     }
                   },
-                  child: Icon(Icons.info_outline),
+                  child: const Icon(Icons.info_outline),
                 ),
               ),
             ],

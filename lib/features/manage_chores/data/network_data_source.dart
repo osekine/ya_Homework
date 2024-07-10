@@ -1,6 +1,6 @@
 part of 'i_data_source.dart';
 
-class NetworkDataSource<T> implements IDataSource<T> {
+class NetworkDataSource<T extends Chore> implements IDataSource<T> {
   NetworkDataSource() {
     _proxy = GetIt.I<NetworkStorageProxy<T>>();
   }
@@ -54,11 +54,18 @@ class NetworkDataSource<T> implements IDataSource<T> {
   void update(T item, String id) {
     _proxy.update(item, id);
   }
+
+  @override
+  Future<T?> getItem(String? id) async {
+    if (id == null) return null;
+    return await _proxy.getItem(id);
+  }
 }
 
 abstract class NetworkStorageProxy<T> {
   int revision = 0;
   Future<List<T>>? load();
+  Future<T?> getItem(String id);
   Future<bool> save(T data);
   Future<void> delete(String id);
   Future<void> update(T data, String id);
@@ -166,10 +173,6 @@ class DioProxy<T> implements NetworkStorageProxy<T> {
 
   @override
   Future<void> syncronize(List<T> data) async {
-    //TODO: патч работает по принципу есть/нет элемента, не отслеживает его изменения
-    //Варианты:
-    //1. ввести список расхождений при синхронизации и вызывать update() для каждого
-    //2. при любых изменениях создавать новый элемент на основе старого и всегда делать патч
     Logs.log('NETWORK syncronizing...');
     final body = jsonEncode(data);
     Logs.log(body);
@@ -178,5 +181,25 @@ class DioProxy<T> implements NetworkStorageProxy<T> {
     } catch (e) {
       Logs.elog('$e');
     }
+  }
+
+  @override
+  Future<T?> getItem(String id) async {
+    T? loadedData;
+    try {
+      final Response<String> response = await _dio.get('$baseUrl/$id');
+      if (response.statusCode == 200) {
+        final jsonBody = jsonDecode(response.data!);
+        final elemBody = jsonBody['element'] as Map<String, dynamic>;
+        revision = jsonBody['revision'] as int;
+
+        //Буду очень рад помощи по этому костылю
+        loadedData = Chore.fromJson(elemBody) as T; //TODO: fix
+        Logs.log('Network Rev: $revision');
+      }
+    } catch (e) {
+      Logs.elog('$e');
+    }
+    return Future.value(loadedData);
   }
 }

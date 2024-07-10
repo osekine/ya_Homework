@@ -1,6 +1,6 @@
 part of 'i_data_source.dart';
 
-class LocalDataSource<T> implements IDataSource<T> {
+class LocalDataSource<T extends Chore> implements IDataSource<T> {
   LocalDataSource() {
     _proxy = GetIt.I<LocalStorageProxy<T>>();
   }
@@ -45,6 +45,13 @@ class LocalDataSource<T> implements IDataSource<T> {
   @override
   void update(T item, String id) {
     sync();
+  }
+
+  @override
+  Future<T?> getItem(String? id) async {
+    if (id == null) return null;
+    data ?? await getData();
+    return data?.firstWhere((element) => element.id == id);
   }
 }
 

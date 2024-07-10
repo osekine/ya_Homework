@@ -1,7 +1,9 @@
+import 'package:to_do_app/core/models/chore.dart';
+
 import '../../../core/utils/logs.dart';
 import 'i_data_source.dart';
 
-class ClientModel<T> implements IDataSource<T> {
+class ClientModel<T extends Chore> implements IDataSource<T> {
   IDataSource<T>? _localStorage;
   IDataSource<T>? _networkStorage;
 
@@ -80,5 +82,10 @@ class ClientModel<T> implements IDataSource<T> {
     data?[data!.indexOf(item)] = item;
     _localStorage?.update(item, id);
     _networkStorage?.update(item, id);
+  }
+
+  @override
+  Future<T?> getItem(String? id) async {
+    return _networkStorage?.getItem(id) ?? _localStorage?.getItem(id);
   }
 }

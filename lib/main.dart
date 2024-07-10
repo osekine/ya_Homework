@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:to_do_app/core/constants/themes.dart';
+import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
 import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 import 'package:to_do_app/features/manage_chores/presentation/screens/home.dart';
 import 'package:to_do_app/core/models/chore.dart';
@@ -14,14 +16,37 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
-    SharedPreferncesProxy<Chore>(),
-  );
+      SharedPreferncesProxy<Chore>());
   GetIt.I.registerSingleton<NetworkStorageProxy<Chore>>(DioProxy<Chore>());
   GetIt.I.registerSingleton<IDataSource<Chore>>(ClientModel<Chore>());
 
   Logs.log('App started');
   runApp(const MyApp());
 }
+
+final _router = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomeScreen(),
+      routes: [
+        GoRoute(
+          path: 'details/:choreId',
+          builder: (context, state) =>
+              NewChoreScreen(choreId: state.pathParameters['choreId']),
+        ),
+        GoRoute(
+          path: 'new',
+          builder: (context, state) => const NewChoreScreen(),
+          redirect: (context, state) {
+            return '/new';
+          },
+        ),
+      ],
+    ),
+  ],
+);
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -31,17 +56,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final IDataSource<Chore> model;
-
   @override
   void initState() {
     super.initState();
-    model = GetIt.I<IDataSource<Chore>>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: _router,
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -52,13 +75,13 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'To Do App',
       theme: darkTheme,
-      home: FutureBuilder(
-        future: model.getData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) return const HomeScreen();
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
+      // home: FutureBuilder(
+      //   future: model.getData(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasData) return const HomeScreen();
+      //     return const Center(child: CircularProgressIndicator());
+      //   },
+      // ),
     );
   }
 }

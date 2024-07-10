@@ -22,10 +22,8 @@ class ChoreListBodyWidget extends StatelessWidget {
                 ? ChoreWidget(provider.choreList[index])
                 : GestureDetector(
                     onTap: () async {
-                      final newChore = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: ((context) => const NewChoreScreen()),
-                        ),
+                      final newChore = await context.push<Chore?>(
+                        '/new/ ',
                       );
                       if (newChore != null) {
                         provider.addChore(newChore);

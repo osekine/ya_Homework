@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
-import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
 import 'package:to_do_app/features/manage_chores/presentation/widgets/chore_title_appbar.dart';
 import 'package:to_do_app/features/manage_chores/presentation/widgets/chore.dart';
 import 'package:to_do_app/generated/l10n.dart';
@@ -44,50 +44,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChoreListProvider(
-      refresh: refresh,
-      onToggleVisible: toggleVisible,
-      scrollController: _controller,
-      client: _model,
-      isDoneVisible: isDoneVisible,
-      child: Scaffold(
-        floatingActionButton: Builder(
-          //Билдер нужен для вызова addChore() и синхронизации дел при добавлении через FAB
-          builder: (context) {
-            return FloatingActionButton(
-              onPressed: () async {
-                Logs.log('Pushed to NewChoreScreen');
-                final newChore = await Navigator.of(context).push<Chore?>(
-                  MaterialPageRoute(
-                    builder: ((context) => const NewChoreScreen()),
-                  ),
-                );
-                Logs.log(newChore?.name ?? 'No new chore');
-                if (newChore != null) {
-                  setState(() {
-                    ChoreListProvider.of(context).addChore(newChore);
-                  });
-                }
-              },
-              child: const Icon(Icons.add),
-            );
-          },
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async => _model.sync(),
-          notificationPredicate: (notification) {
-            return notification.depth >= 0;
-          },
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: _controller,
-            slivers: const [
-              ChoreTitleAppbar(),
-              ChoreListBodyWidget(),
-            ],
-          ),
-        ),
-      ),
+    return FutureBuilder(
+      future: _model.getData(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return ChoreListProvider(
+            refresh: refresh,
+            onToggleVisible: toggleVisible,
+            scrollController: _controller,
+            client: _model,
+            isDoneVisible: isDoneVisible,
+            child: Scaffold(
+              floatingActionButton: Builder(
+                //Билдер нужен для вызова addChore() и синхронизации дел при добавлении через FAB
+                builder: (context) {
+                  return FloatingActionButton(
+                    onPressed: () async {
+                      Logs.log('Pushed to NewChoreScreen');
+                      final newChore = await context.push<Chore?>('/new/');
+                      Logs.log(newChore?.name ?? 'No new chore');
+                      if (newChore != null) {
+                        setState(() {
+                          ChoreListProvider.of(context).addChore(newChore);
+                        });
+                      }
+                    },
+                    child: const Icon(Icons.add),
+                  );
+                },
+              ),
+              body: RefreshIndicator(
+                onRefresh: () async => _model.sync(),
+                notificationPredicate: (notification) {
+                  return notification.depth >= 0;
+                },
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: _controller,
+                  slivers: const [
+                    ChoreTitleAppbar(),
+                    ChoreListBodyWidget(),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 

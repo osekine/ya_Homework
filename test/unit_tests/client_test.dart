@@ -153,14 +153,12 @@ void main() {
         client.add(newChore);
       }
       mockNetworkBehavior.connection = true;
-      // client.add(Chore(name: '-1'));
 
       await client.sync();
 
       //assert
       expect(mockLocal.list.length, 11);
       expect(mockNetwork.list?.length, 11);
-      // expect(mockNetwork.list?.last.name, '-1');
       expect(mockLocal.revision, 11);
       expect(mockNetwork.revision, 2);
     });

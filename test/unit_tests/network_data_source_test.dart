@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:to_do_app/core/models/chore.dart';
-import 'package:to_do_app/core/utils/logs.dart';
 import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 
 import 'mock_behavior/mock_network_behavior.dart';
