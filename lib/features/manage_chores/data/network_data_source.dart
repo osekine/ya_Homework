@@ -73,8 +73,8 @@ abstract class NetworkStorageProxy<T> {
 }
 
 class DioProxy<T> implements NetworkStorageProxy<T> {
-  final String baseUrl = 'https://hive.mrdekk.ru/todo/list';
-  final String token = 'Wilwarin';
+  final String baseUrl = dotenv.env['BASE_URL']!;
+  final String token = dotenv.env['BEARER']!;
 
   @override
   int revision = 0;

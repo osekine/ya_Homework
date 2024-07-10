@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -12,8 +13,9 @@ import 'package:to_do_app/core/utils/logs.dart';
 
 import 'generated/l10n.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: 'lib/.env');
 
   GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
     SharedPreferncesProxy<Chore>(),

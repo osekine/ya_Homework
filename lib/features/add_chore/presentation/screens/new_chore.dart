@@ -121,7 +121,7 @@ class NewChoreScreenState extends State<NewChoreScreen> {
                         newChore = Chore(
                           name: textController.text,
                           deadline: dateTime,
-                          priority: priority ?? Priority.none,
+                          priority: priority,
                           id: widget.choreId,
                         );
                         if (widget.choreId == null) {

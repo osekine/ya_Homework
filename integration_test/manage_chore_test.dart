@@ -17,16 +17,15 @@ void main() {
     final mockStorage = GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
       MockLocalStorageProxy<Chore>(),
     ) as MockLocalStorageProxy<Chore>;
-    final mockBehavior = MockLocalBehavior<Chore>(
+    MockLocalBehavior<Chore>(
       mockStorage: mockStorage,
     )
       ..onLoad()
       ..onSave();
 
-    final client =
-        GetIt.I.registerSingleton<IDataSource<Chore>>(LocalDataSource<Chore>())
-          ..add(Chore(name: 'mocker'))
-          ..add(Chore(name: 'reckom'));
+    GetIt.I.registerSingleton<IDataSource<Chore>>(LocalDataSource<Chore>())
+      ..add(Chore(name: 'mocker'))
+      ..add(Chore(name: 'reckom'));
 
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
@@ -47,15 +46,15 @@ void main() {
     final mockStorage = GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
       MockLocalStorageProxy<Chore>(),
     ) as MockLocalStorageProxy<Chore>;
-    final mockBehavior = MockLocalBehavior<Chore>(
+    MockLocalBehavior<Chore>(
       mockStorage: mockStorage,
     )
       ..onLoad()
       ..onSave();
 
-    final client = GetIt.I
+    GetIt.I
         .registerSingleton<IDataSource<Chore>>(LocalDataSource<Chore>())
-      ..add(Chore(name: 'mocker'));
+        .add(Chore(name: 'mocker'));
 
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
