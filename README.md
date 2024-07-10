@@ -1,16 +1,18 @@
 # To-Do List
 
 Очередное приложение для смартфонов, которое позволяет создавать, сохранять(!) и отслеживать запланированные задачи
-
-![Основной экран с выключенным фильтром выполненных дел.](/assets/screenshots/First.png)
-![Основной экран со включенным фильтром выполненных дел.](/assets/screenshots/Second.png)
-![Экран создания нового дела](/assets/screenshots/Third.png)
+<p align = "middle">
+<img src = "/assets/screenshots/First.png" width = "200" height = "200" />
+<img src = "/assets/screenshots/Second.png" width = "200" height = "200" />
+<img src = "/assets/screenshots/Third.png" width = "200" height = "200" />
+</p>
 
 ## Особенности
  * Удобный список с отображением всех запланированных задач
  * Фильтр выполненных задач
  * Возможность указывать приоритет и дедлайн задачи
  * Автоматическое сохранение и загрузка всех изменений!
+ * Поддержка Deeplinks для открытия [главного экрана](list://to-do-app.com/) и [создания нового дела](list://to-do-app.com/new)
 
 ## Скачать
 
