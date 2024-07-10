@@ -10,6 +10,7 @@ class DescriptionWidget extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return TextField(
+      key: const ValueKey('description'),
       onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
       controller: NewChoreScreenState.of(context).textController,
       maxLines: null,
