@@ -101,14 +101,6 @@ class _ChoreWidgetState extends State<ChoreWidget> {
                 flex: 1,
                 child: GestureDetector(
                   onTap: () async {
-                    // TODO: переделать на Navigator 2.0
-                    // final newChore = await context.push<Chore?>(
-                    //   '/details/${widget.chore.id}',
-                    // );
-                    // if (newChore != null) {
-                    //   ChoreListProvider.of(context)
-                    //       .updateChore(newChore.copyWith(id: widget.chore.id));
-                    // }
                     await context.push('/details/${widget.chore.id}');
                     provider.refresh();
                   },

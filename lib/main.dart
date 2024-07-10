@@ -76,13 +76,6 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'To Do App',
       theme: darkTheme,
-      // home: FutureBuilder(
-      //   future: model.getData(),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasData) return const HomeScreen();
-      //     return const Center(child: CircularProgressIndicator());
-      //   },
-      // ),
     );
   }
 }

@@ -68,7 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: const Icon(Icons.add),
               ),
               body: RefreshIndicator(
-                onRefresh: () async => _model.sync(),
+                onRefresh: (() async {
+                  await _model.sync();
+                  setState(() {});
+                }),
                 notificationPredicate: (notification) {
                   return notification.depth >= 0;
                 },
