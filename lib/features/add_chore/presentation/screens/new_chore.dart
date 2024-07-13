@@ -41,23 +41,33 @@ class NewChoreScreenState extends State<NewChoreScreen> {
   late final Future<Chore?>? _chore;
 
   void changeDate(DateTime? newDate) {
-    dateTime = newDate;
+    setState(() {
+      dateTime = newDate;
+    });
   }
 
   void changePriority(Priority newPriority) {
     priority = newPriority;
   }
 
+  void deleteChore() {
+    dateTime = null;
+    priority = Priority.none;
+    textController.clear();
+  }
+
   void toggleScreen() {
-    textController.text.isNotEmpty
-        ? setState(() {
-            Logs.log('Started chore');
-            hasChore = true;
-          })
-        : setState(() {
-            Logs.log('Clear chore');
-            hasChore = false;
-          });
+    if (!hasChore && textController.text.isNotEmpty) {
+      setState(() {
+        Logs.log('Started chore');
+        hasChore = true;
+      });
+    } else if (hasChore && textController.text.isEmpty) {
+      setState(() {
+        Logs.log('Clear chore');
+        hasChore = false;
+      });
+    }
   }
 
   static NewChoreScreenState of(BuildContext context) {
@@ -96,6 +106,9 @@ class NewChoreScreenState extends State<NewChoreScreen> {
           return const Center(child: CircularProgressIndicator());
         } else {
           return AddChoreProvider(
+            dateTime: dateTime,
+            priority: priority,
+            hasChore: hasChore,
             controller: this,
             child: Scaffold(
               appBar: AppBar(
