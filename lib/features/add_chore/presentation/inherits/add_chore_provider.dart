@@ -5,14 +5,13 @@ import 'package:to_do_app/core/models/chore.dart';
 enum Aspects { hasChore, date, priority }
 
 class AddChoreProvider extends InheritedModel<Aspects> {
-  const AddChoreProvider({
+  AddChoreProvider({
     super.key,
     required super.child,
     required this.controller,
-    required this.hasChore,
-    required this.dateTime,
-    required this.priority,
-  });
+  })  : hasChore = controller.hasChore,
+        dateTime = controller.dateTime,
+        priority = controller.priority;
 
   final NewChoreScreenState controller;
   final bool hasChore;
@@ -34,7 +33,8 @@ class AddChoreProvider extends InheritedModel<Aspects> {
         case Aspects.date:
           return dateTime != oldWidget.dateTime;
         case Aspects.priority:
-          return priority != oldWidget.priority;
+          return priority != oldWidget.priority ||
+              hasChore != oldWidget.hasChore;
       }
     }
     return false;
@@ -62,21 +62,22 @@ class AddChoreProvider extends InheritedModel<Aspects> {
       InheritedModel.inheritFrom<AddChoreProvider>(
         context,
         aspect: Aspects.date,
-      )?.controller.dateTime;
+      )?.dateTime;
 
   static Priority priorityOf(BuildContext context) =>
       InheritedModel.inheritFrom<AddChoreProvider>(
         context,
         aspect: Aspects.priority,
-      )?.controller.priority ??
+      )?.priority ??
       Priority.none;
 
-  Chore? getChore() {
+  Chore? getChore([String? id]) {
     return controller.hasChore
         ? Chore(
             name: controller.textController.text,
             deadline: controller.dateTime,
             priority: controller.priority,
+            id: id,
           )
         : null;
   }

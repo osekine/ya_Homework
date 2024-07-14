@@ -106,55 +106,10 @@ class NewChoreScreenState extends State<NewChoreScreen> {
           return const Center(child: CircularProgressIndicator());
         } else {
           return AddChoreProvider(
-            dateTime: dateTime,
-            priority: priority,
-            hasChore: hasChore,
             controller: this,
             child: Scaffold(
-              appBar: AppBar(
-                elevation: 8,
-                forceMaterialTransparency: true,
-                surfaceTintColor: colors.surface,
-                shadowColor: colors.shadow,
-                backgroundColor: colors.background,
-                foregroundColor: colors.onBackground,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Logs.log('Poped to HomeScreen');
-                    context.pop();
-                  },
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () async {
-                      Logs.log('Saved chore');
-                      Chore? newChore;
-                      if (hasChore) {
-                        newChore = Chore(
-                          name: textController.text,
-                          deadline: dateTime,
-                          priority: priority,
-                          id: widget.choreId,
-                        );
-                        if (widget.choreId == null) {
-                          GetIt.I<IDataSource<Chore>>().add(newChore);
-                        } else {
-                          GetIt.I<IDataSource<Chore>>()
-                              .update(newChore, widget.choreId!);
-                        }
-                      }
-                      context.pop<Chore?>(newChore);
-                    },
-                    child: Text(
-                      S.of(context).save.toUpperCase(),
-                      style: TextOption.getCustomStyle(
-                        style: TextStyles.button,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ],
+              appBar: NewChoreAppBar(
+                choreId: widget.choreId,
               ),
               body: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
@@ -183,5 +138,63 @@ class NewChoreScreenState extends State<NewChoreScreen> {
   void dispose() {
     textController.dispose();
     super.dispose();
+  }
+}
+
+class NewChoreAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const NewChoreAppBar({
+    super.key,
+    this.choreId,
+  });
+
+  final String? choreId;
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  AppBar build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final hasChore = AddChoreProvider.of(context).hasChore;
+
+    return AppBar(
+      elevation: 8,
+      forceMaterialTransparency: true,
+      surfaceTintColor: colors.surface,
+      shadowColor: colors.shadow,
+      backgroundColor: colors.background,
+      foregroundColor: colors.onBackground,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          Logs.log('Poped to HomeScreen');
+          context.pop();
+        },
+      ),
+      actions: [
+        TextButton(
+          onPressed: () async {
+            Logs.log('Saved chore');
+            Chore? newChore;
+            if (hasChore) {
+              newChore = AddChoreProvider.of(context).getChore(choreId)!;
+              if (choreId == null) {
+                GetIt.I<IDataSource<Chore>>().add(newChore);
+              } else {
+                GetIt.I<IDataSource<Chore>>().update(newChore, choreId!);
+              }
+            }
+            context.pop<Chore?>(newChore);
+          },
+          child: Text(
+            S.of(context).save.toUpperCase(),
+            style: TextOption.getCustomStyle(
+              style: TextStyles.button,
+              color: Colors.blue,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

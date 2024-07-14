@@ -7,7 +7,6 @@ class DeleteDescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Logs.log('DeleteDescriptionWidget build');
     final model = NewChoreScreenState.of(context);
     final isActive = AddChoreProvider.chorePresenceOf(context);
     return TextButton.icon(
