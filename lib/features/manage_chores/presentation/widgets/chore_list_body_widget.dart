@@ -27,7 +27,13 @@ class ChoreListBodyWidget extends StatelessWidget {
                     },
                     child: ListTile(
                       leading: const SizedBox(width: 0, height: 0),
-                      title: Text(S.of(context).newChore),
+                      title: Text(
+                        S.of(context).newChore,
+                        style: TextOption.getCustomStyle(
+                          style: TextStyles.body,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
                     ),
                   ),
             childCount: provider.choreList.length + 1,

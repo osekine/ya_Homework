@@ -58,7 +58,7 @@ class _ChoreTitleAppbarState extends State<ChoreTitleAppbar> {
                       S.of(context).title,
                       style: TextOption.getCustomStyle(
                         style: TextStyles.title,
-                        color: theme.colorScheme.onBackground,
+                        color: theme.colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -68,7 +68,10 @@ class _ChoreTitleAppbarState extends State<ChoreTitleAppbar> {
                         : 1,
                     child: Text(
                       '${S.of(context).doneChores}${ChoreListProvider.of(context).doneCount}',
-                      style: theme.textTheme.titleSmall,
+                      style: TextOption.getCustomStyle(
+                        style: TextStyles.subhead,
+                        color: theme.colorScheme.onSecondary,
+                      ),
                     ),
                   ),
                 ],
