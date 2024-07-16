@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:to_do_app/core/constants/environment.dart';
 import 'package:to_do_app/core/constants/themes.dart';
 import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
 import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
@@ -75,7 +76,7 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: EnvironmentDefines.isDev,
       title: 'To Do App',
       theme: lightTheme,
       darkTheme: darkTheme,

@@ -1,0 +1,6 @@
+{
+    "DEFINE_IS_DEV": true,
+    "DEFINE_APP_SUFFIX": ".dev",
+    "DEFINE_APP_NAME": "To-Do App[DEV]",
+    "DEFINE_APP_VERSION": "1.0.0.dev"
+}
