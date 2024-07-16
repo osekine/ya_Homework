@@ -111,8 +111,7 @@ class DioProxy<T> implements NetworkStorageProxy<T> {
         revision = jsonBody['revision'] as int;
 
         //Буду очень рад помощи по этому костылю
-        loadedData =
-            listBody.map((e) => Chore.fromJson(e) as T).toList(); //TODO: fix
+        loadedData = listBody.map((e) => Chore.fromJson(e) as T).toList();
         Logs.log('Network Rev: $revision');
       }
     } catch (e) {
@@ -150,7 +149,7 @@ class DioProxy<T> implements NetworkStorageProxy<T> {
       data,
       toEncodable: ((nonEncodable) =>
           data is Chore ? data.toJson() : nonEncodable),
-    ); //TODO: fix
+    );
     try {
       await _dio.put(
         '$baseUrl/$id',
@@ -194,7 +193,7 @@ class DioProxy<T> implements NetworkStorageProxy<T> {
         revision = jsonBody['revision'] as int;
 
         //Буду очень рад помощи по этому костылю
-        loadedData = Chore.fromJson(elemBody) as T; //TODO: fix
+        loadedData = Chore.fromJson(elemBody) as T;
         Logs.log('Network Rev: $revision');
       }
     } catch (e) {

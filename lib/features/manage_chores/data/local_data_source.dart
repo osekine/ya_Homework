@@ -81,7 +81,7 @@ class SharedPreferncesProxy<T> implements LocalStorageProxy<T> {
     final revision = storage.getInt('revision');
     final list = storage
         .getStringList('list')
-        ?.map((e) => Chore.fromJson(jsonDecode(e)) as T) // TODO: fix
+        ?.map((e) => Chore.fromJson(jsonDecode(e)) as T)
         .toList();
 
     return (revision ?? 0, list ?? []);

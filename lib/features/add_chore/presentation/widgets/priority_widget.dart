@@ -55,9 +55,9 @@ class PriorityWidget extends StatelessWidget {
       leadingIcon: const Icon(Icons.priority_high),
       style: ButtonStyle(
         alignment: Alignment.centerLeft,
-        iconSize: MaterialStateProperty.all(16),
-        iconColor: MaterialStateProperty.all(Colors.red),
-        foregroundColor: MaterialStateProperty.all(
+        iconSize: WidgetStateProperty.all(16),
+        iconColor: WidgetStateProperty.all(Colors.red),
+        foregroundColor: WidgetStateProperty.all(
           Colors.red,
         ),
       ),

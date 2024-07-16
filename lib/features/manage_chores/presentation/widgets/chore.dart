@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:to_do_app/core/constants/text.dart';
+import 'package:to_do_app/core/utils/analytics.dart';
 import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
 import 'package:to_do_app/core/utils/format.dart';
 
@@ -22,11 +23,17 @@ class _ChoreWidgetState extends State<ChoreWidget> {
   Future<bool?> _onConfirm(DismissDirection direction) async {
     if (direction == DismissDirection.endToStart) {
       Logs.log('${widget.chore.hashCode} deleted');
+      Analytics.removeChore();
       provider.removeChore(widget.chore);
       return Future.value(true);
     } else {
       Logs.log('${widget.chore.hashCode} confirmed');
       widget.chore.isDone = !widget.chore.isDone;
+      if (widget.chore.isDone) {
+        Analytics.doneChore();
+      } else {
+        Analytics.undoChore();
+      }
       provider.updateChore(widget.chore);
       return Future.value(false);
     }

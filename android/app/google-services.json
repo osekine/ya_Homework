@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "461688810503",
+    "project_id": "ya-homework",
+    "storage_bucket": "ya-homework.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461688810503:android:21b845116a8b517be88ea2",
+        "android_client_info": {
+          "package_name": "com.example.to_do_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsyygV8jwJx0zhz_1wgGBY0U30bKqhNXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461688810503:android:477c265a24b147bae88ea2",
+        "android_client_info": {
+          "package_name": "com.example.to_do_app.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsyygV8jwJx0zhz_1wgGBY0U30bKqhNXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

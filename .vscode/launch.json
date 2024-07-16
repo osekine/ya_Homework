@@ -7,7 +7,10 @@
         {
             "name": "to_do_app",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define-from-file=dev_config.json"
+            ]
         },
         {
             "name": "to_do_app (profile mode)",
@@ -19,7 +22,10 @@
             "name": "to_do_app (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "toolArgs": [
+                "--dart-define-from-file=release_config.json"
+            ]
         }
     ]
 }

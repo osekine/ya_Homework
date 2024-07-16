@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:to_do_app/core/constants/text.dart';
+import 'package:to_do_app/core/utils/analytics.dart';
 import 'package:to_do_app/features/add_chore/presentation/inherits/add_chore_provider.dart';
 import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 import 'package:to_do_app/generated/l10n.dart';
@@ -29,10 +30,7 @@ class NewChoreScreen extends StatefulWidget {
 class NewChoreScreenState extends State<NewChoreScreen> {
   final textController = TextEditingController();
 
-  //Нужно для блокировки выбора приоритета, даты и удаления,
-  //если TextField пустой (пока работает только для даты)
-
-  //TODO: доделать, уже 4 утра, сил моих нет на это
+  //Нужно для блокировки выбора приоритета, даты и удаления,если TextField пустой
   bool hasChore = false;
 
   DateTime? dateTime;
@@ -163,7 +161,7 @@ class NewChoreAppBar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: colors.surface,
       shadowColor: colors.shadow,
       backgroundColor: colors.background,
-      foregroundColor: colors.onBackground,
+      foregroundColor: colors.onTertiary,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
@@ -179,8 +177,10 @@ class NewChoreAppBar extends StatelessWidget implements PreferredSizeWidget {
             if (hasChore) {
               newChore = AddChoreProvider.of(context).getChore(choreId)!;
               if (choreId == null) {
+                Analytics.addChore();
                 GetIt.I<IDataSource<Chore>>().add(newChore);
               } else {
+                Analytics.updateChore();
                 GetIt.I<IDataSource<Chore>>().update(newChore, choreId!);
               }
             }

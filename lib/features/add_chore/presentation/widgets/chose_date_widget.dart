@@ -54,7 +54,6 @@ class _ChoseDateWidgetState extends State<ChoseDateWidget> {
 
 class _SwitchDateWidget extends StatefulWidget {
   const _SwitchDateWidget({
-    super.key,
     required this.baseColor,
     required this.canSwitch,
   });
@@ -108,7 +107,7 @@ class _SwitchDateWidgetState extends State<_SwitchDateWidget> {
 }
 
 class _DateDescriptionWidget extends StatelessWidget {
-  const _DateDescriptionWidget({super.key});
+  const _DateDescriptionWidget();
 
   @override
   Widget build(BuildContext context) {

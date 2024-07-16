@@ -25,7 +25,9 @@ class AddChoreProvider extends InheritedModel<Aspects> {
 
   @override
   bool updateShouldNotifyDependent(
-      AddChoreProvider oldWidget, Set<Aspects> dependencies) {
+    AddChoreProvider oldWidget,
+    Set<Aspects> dependencies,
+  ) {
     for (final dep in dependencies) {
       switch (dep) {
         case Aspects.hasChore:

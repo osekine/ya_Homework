@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -5,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:to_do_app/core/constants/environment.dart';
 import 'package:to_do_app/core/constants/themes.dart';
+import 'package:to_do_app/core/utils/analytics.dart';
 import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
 import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 import 'package:to_do_app/features/manage_chores/presentation/screens/home.dart';
@@ -12,10 +15,12 @@ import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/client.dart';
 import 'package:to_do_app/core/utils/logs.dart';
 
+import 'core/utils/firebase_options.dart';
 import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Analytics.init();
   await dotenv.load(fileName: 'lib/.env');
 
   GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
@@ -29,6 +34,7 @@ void main() async {
 }
 
 final _router = GoRouter(
+  observers: [FirebaseAnalyticsObserver(analytics: Analytics.instance)],
   initialLocation: '/',
   routes: [
     GoRoute(
