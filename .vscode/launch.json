@@ -9,7 +9,7 @@
             "request": "launch",
             "type": "dart",
             "toolArgs": [
-                "--dart-define-from-file=dev_config.json"
+                "--dart-define-from-file=dev_config.json",
             ]
         },
         {

@@ -17,8 +17,9 @@ class NetworkDataSource<T extends Chore> implements IDataSource<T> {
     data?.add(item);
     Logs.log('NETWORK Saving...');
     final result = await _proxy.save(item);
+    ++revision;
     if (result) {
-      revision = _proxy.revision;
+      // revision = _proxy.revision;
     }
   }
 
@@ -27,14 +28,18 @@ class NetworkDataSource<T extends Chore> implements IDataSource<T> {
     Logs.log('NETWORK Loading...');
     final newData = await _proxy.load();
     final newRevision = _proxy.revision;
+    Logs.log('LOADED DATA: $newData, $newRevision');
+    Logs.log('old data: $data, $revision');
     if (newData != null && newRevision < revision) {
-      await sync();
       revision = newRevision;
+
+      await sync();
 
       return getData();
     }
-    data = newData;
+    data = newData ?? data;
     revision = newRevision;
+
     return data;
   }
 
@@ -73,8 +78,8 @@ abstract class NetworkStorageProxy<T> {
 }
 
 class DioProxy<T> implements NetworkStorageProxy<T> {
-  final String baseUrl = dotenv.env['BASE_URL']!;
-  final String token = dotenv.env['BEARER']!;
+  final String baseUrl = EnvironmentDefines.baseUrl;
+  final String token = EnvironmentDefines.apiKey;
 
   @override
   int revision = 0;

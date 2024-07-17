@@ -59,6 +59,8 @@ class ClientModel<T extends Chore> implements IDataSource<T> {
     } else {
       data = _localStorage?.data ?? [];
       revision = _localStorage?.revision ?? 0;
+      _networkStorage!.data = List.from(localData as Iterable);
+      await _networkStorage!.sync();
     }
 
     _networkStorage?.revision = revision;

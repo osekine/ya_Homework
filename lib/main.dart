@@ -1,6 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -19,8 +18,7 @@ import 'generated/l10n.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Analytics.init();
-  await dotenv.load(fileName: 'lib/.env');
-
+  await EnvironmentDefines.init();
   GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
     SharedPreferncesProxy<Chore>(),
   );

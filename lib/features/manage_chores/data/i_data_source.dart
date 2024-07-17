@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:to_do_app/core/constants/environment.dart';
 import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/core/utils/logs.dart';
 

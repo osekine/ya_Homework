@@ -8,6 +8,7 @@
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
 analyzer:
+  exclude: [lib/generated/**, lib/l10n/**]
   errors:
     deprecated_member_use: ignore
 include: package:flutter_lints/flutter.yaml
