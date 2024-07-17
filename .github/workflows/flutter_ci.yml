@@ -39,8 +39,11 @@ jobs:
       - run: flutter test
     timeout-minutes: 10
 
-  build:
+  build:  
     name: Build Android
+    env:
+      BASE_URL: ${{secrets.BASE_URL}}
+      API_KEY: ${{secrets.BASE_API_KEY}}
     needs: [test]
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +56,7 @@ jobs:
           channel: "stable"
       - run: flutter pub get
       - run: flutter clean
-      - run: flutter build apk
+      - run: flutter build apk --dart-define-from-file=dev_config.json --dart-define=DEFINE_BASE_URL=BASE_URL --dart-define=DEFINE_API_KEY=API_KEY
     timeout-minutes: 10
        
   
