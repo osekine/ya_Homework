@@ -56,6 +56,12 @@ jobs:
           channel: "stable"
       - run: flutter pub get
       - run: flutter build apk ${{secrets.DEV_BUILD_ENV}}
+      - name: Publish DEV to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
+          groups: testers
       - name: Publish DEV to Github Releases
         uses: ncipollo/release-action@v1
         with:
@@ -63,12 +69,6 @@ jobs:
           name: DEV
           tag: v.1.0.0 DEV + ${{github.run_number}}
           allowUpdates: true
-      - name: Publish DEV to Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-          groups: testers
     timeout-minutes: 10
 
   build-release:  
@@ -86,6 +86,12 @@ jobs:
           channel: "stable"
       - run: flutter pub get
       - run: flutter build apk ${{secrets.RELEASE_BUILD_ENV}}
+      - name: Publish release to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
+          groups: testers
       - name: Publish release to Github Releases
         uses: ncipollo/release-action@v1
         with:
@@ -93,12 +99,6 @@ jobs:
           name: Release
           tag: v.1.0.0 + ${{github.run_number}}
           allowUpdates: true
-      - name: Publish release to Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-          groups: testers
     timeout-minutes: 10
        
   
