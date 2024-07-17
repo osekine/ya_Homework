@@ -55,14 +55,13 @@ jobs:
         with:
           channel: "stable"
       - run: flutter pub get
-      - run: flutter build apk ${{secrets.DEV_BUILD_ENV}}
+      - run: flutter build apk ${{secrets.DEV_BUILD_ENV}} --dart-define=DEFINE_API_KEY=${{secrets.BASE_API_KEY}} --dart-define=DEFINE_BASE_URL=${{secrets.BASE_URL}}
       - name: Publish DEV to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           file: build/app/outputs/flutter-apk/app-release.apk
-          appId: ${{secrets.FIREBASE_APP_ID}}
+          appId: ${{secrets.FIREBASE_DEV_APP_ID}}
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-          groups: testers
       - name: Publish DEV to Github Releases
         uses: ncipollo/release-action@v1
         with:
@@ -86,14 +85,13 @@ jobs:
         with:
           channel: "stable"
       - run: flutter pub get
-      - run: flutter build apk ${{secrets.RELEASE_BUILD_ENV}}
+      - run: flutter build apk ${{secrets.RELEASE_BUILD_ENV}} --dart-define=DEFINE_API_KEY=${{secrets.BASE_API_KEY}} --dart-define=DEFINE_BASE_URL=${{secrets.BASE_URL}}
       - name: Publish release to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           file: build/app/outputs/flutter-apk/app-release.apk
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-          groups: testers
       - name: Publish release to Github Releases
         uses: ncipollo/release-action@v1
         with:
