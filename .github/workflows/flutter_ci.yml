@@ -40,10 +40,10 @@ jobs:
     timeout-minutes: 10
 
   build:  
-    name: Build Android
+    name: Build and publish APK
     env:
-      BASE_URL: ${{secrets.BASE_URL}}
-      API_KEY: ${{secrets.BASE_API_KEY}}
+      DEV_CONFIG: ${{secrets.DEV_CONFIG}}
+      RELEASE_CONFIG: ${{secrets.RELEASE_CONFIG}}
     needs: [test]
     runs-on: ubuntu-latest
     steps:
@@ -55,8 +55,21 @@ jobs:
         with:
           channel: "stable"
       - run: flutter pub get
-      - run: flutter clean
-      - run: flutter build apk --dart-define-from-file=dev_config.json --dart-define=DEFINE_BASE_URL=BASE_URL --dart-define=DEFINE_API_KEY=API_KEY
+      - run: flutter build apk DEV_CONFIG
+      - name: Publish DEV to Github Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: build/app/outputs/flutter-apk/app-release.apk
+          name: DEV
+          tag: v.1.0.0 DEV + ${{github.run_number}}
+          allowUpdates: true
+      - name: Publish DEV to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
+          groups: testers
+          file: build/app/outputs/flutter-apk/app-release.apk
     timeout-minutes: 10
        
   
