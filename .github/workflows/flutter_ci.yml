@@ -59,6 +59,7 @@ jobs:
       - name: Publish DEV to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
+          file: build/app/outputs/flutter-apk/app-release.apk
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
           groups: testers
@@ -89,6 +90,7 @@ jobs:
       - name: Publish release to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
+          file: build/app/outputs/flutter-apk/app-release.apk
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
           groups: testers
