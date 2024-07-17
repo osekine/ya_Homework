@@ -62,13 +62,7 @@ jobs:
           file: build/app/outputs/flutter-apk/app-release.apk
           appId: ${{secrets.FIREBASE_DEV_APP_ID}}
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-      - name: Publish DEV to Github Releases
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: build/app/outputs/flutter-apk/app-release.apk
-          name: DEV
-          tag: v.1.0.0 DEV + ${{github.run_number}}
-          allowUpdates: true
+     
     timeout-minutes: 10
 
   build-release:  
@@ -92,13 +86,7 @@ jobs:
           file: build/app/outputs/flutter-apk/app-release.apk
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-      - name: Publish release to Github Releases
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: build/app/outputs/flutter-apk/app-release.apk
-          name: Release
-          tag: v.1.0.0 + ${{github.run_number}}
-          allowUpdates: true
+      
     timeout-minutes: 10
        
   
