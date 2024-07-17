@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/constants/text.dart';
-import 'package:to_do_app/features/manage_chores/domain/chore_list_provider.dart';
+import 'package:to_do_app/core/constants/text.dart';
+import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
 import 'package:to_do_app/generated/l10n.dart';
 import 'visibility_widget.dart';
 
@@ -58,7 +58,7 @@ class _ChoreTitleAppbarState extends State<ChoreTitleAppbar> {
                       S.of(context).title,
                       style: TextOption.getCustomStyle(
                         style: TextStyles.title,
-                        color: theme.colorScheme.onBackground,
+                        color: theme.colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -68,7 +68,10 @@ class _ChoreTitleAppbarState extends State<ChoreTitleAppbar> {
                         : 1,
                     child: Text(
                       '${S.of(context).doneChores}${ChoreListProvider.of(context).doneCount}',
-                      style: theme.textTheme.titleSmall,
+                      style: TextOption.getCustomStyle(
+                        style: TextStyles.subhead,
+                        color: theme.colorScheme.onSecondary,
+                      ),
                     ),
                   ),
                 ],

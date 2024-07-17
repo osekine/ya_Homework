@@ -1,17 +1,58 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:to_do_app/constants/themes.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:to_do_app/core/constants/environment.dart';
+import 'package:to_do_app/core/constants/themes.dart';
+import 'package:to_do_app/core/utils/analytics.dart';
+import 'package:to_do_app/features/add_chore/presentation/screens/new_chore.dart';
+import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
 import 'package:to_do_app/features/manage_chores/presentation/screens/home.dart';
-import 'package:to_do_app/models/chore.dart';
+import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/client.dart';
-import 'package:to_do_app/utils/logs.dart';
+import 'package:to_do_app/core/utils/logs.dart';
 
 import 'generated/l10n.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Analytics.init();
+  await EnvironmentDefines.init();
+  GetIt.I.registerSingleton<LocalStorageProxy<Chore>>(
+    SharedPreferncesProxy<Chore>(),
+  );
+  GetIt.I.registerSingleton<NetworkStorageProxy<Chore>>(DioProxy<Chore>());
+  GetIt.I.registerSingleton<IDataSource<Chore>>(ClientModel<Chore>());
+
   Logs.log('App started');
   runApp(const MyApp());
 }
+
+final _router = GoRouter(
+  observers: [FirebaseAnalyticsObserver(analytics: Analytics.instance)],
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomeScreen(),
+      routes: [
+        GoRoute(
+          path: 'details/:choreId',
+          builder: (context, state) =>
+              NewChoreScreen(choreId: state.pathParameters['choreId']),
+          redirect: (context, state) =>
+              '/details/${state.pathParameters['choreId']}',
+        ),
+        GoRoute(
+          path: 'new',
+          builder: (context, state) => const NewChoreScreen(),
+          redirect: (context, state) => '/new',
+        ),
+      ],
+    ),
+  ],
+);
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -21,17 +62,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final ClientModel<Chore> model;
-
   @override
   void initState() {
     super.initState();
-    model = ClientModel<Chore>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: _router,
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -39,16 +78,11 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: EnvironmentDefines.isDev,
       title: 'To Do App',
-      theme: darkTheme,
-      home: FutureBuilder(
-        future: model.getData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) return HomeScreen(model: model);
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
     );
   }
 }

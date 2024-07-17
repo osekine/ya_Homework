@@ -7,6 +7,10 @@
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
+analyzer:
+  exclude: [lib/generated/**, lib/l10n/**]
+  errors:
+    deprecated_member_use: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
@@ -39,6 +43,8 @@ linter:
     - no_leading_underscores_for_local_identifiers
     - prefer_conditional_assignment
     - require_trailing_commas
+    - deprecated_member_use: false
+
 
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule

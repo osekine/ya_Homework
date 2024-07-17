@@ -7,45 +7,60 @@ class PriorityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Logs.log('PriorityWidget build');
     final colors = Theme.of(context).colorScheme;
+    final priority = AddChoreProvider.priorityOf(context);
+    final canSwitch = AddChoreProvider.chorePresenceOf(context);
+    final baseColor = canSwitch ? colors.onBackground : colors.onSurface;
     return DropdownMenu(
+      enabled: canSwitch,
       onSelected: (value) =>
-          AddChoreProvider.of(context).changePriority(value ?? Priority.none),
-      label: Text(S.of(context).importance),
+          NewChoreScreenState.of(context).changePriority(value ?? priority),
+      label: Text(
+        S.of(context).importance,
+        style: TextOption.getCustomStyle(
+          style: TextStyles.subtitle,
+          color: baseColor,
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         border: InputBorder.none,
         labelStyle: TextOption.getCustomStyle(
           style: TextStyles.subtitle,
-          color: colors.onBackground,
+          color: baseColor,
         ),
       ),
       enableSearch: false,
       menuStyle: MenuStyle(
         surfaceTintColor:
-            MaterialStateColor.resolveWith((states) => colors.surface),
+            WidgetStateColor.resolveWith((states) => colors.surface),
         alignment: AlignmentDirectional.topStart,
       ),
       trailingIcon:
           const Icon(Icons.arrow_drop_down, color: Colors.transparent),
-      initialSelection: Priority.none,
+      initialSelection: priority,
       dropdownMenuEntries: Priority.values.map((e) {
         if (e == Priority.high) {
-          return DropdownMenuEntry(
-            value: e,
-            label: e.name,
-            leadingIcon: const Icon(Icons.priority_high),
-            style: ButtonStyle(
-              alignment: Alignment.centerLeft,
-              iconSize: MaterialStateProperty.all(16),
-              iconColor: MaterialStateProperty.all(Colors.red),
-              foregroundColor: MaterialStateProperty.all(
-                Colors.red,
-              ),
-            ),
-          );
+          return _highPriorityEntry(e);
         }
         return DropdownMenuEntry(value: e, label: e.name);
       }).toList(),
+    );
+  }
+
+  DropdownMenuEntry<Priority> _highPriorityEntry(Priority e) {
+    return DropdownMenuEntry(
+      value: e,
+      label: e.name,
+      leadingIcon: const Icon(Icons.priority_high),
+      style: ButtonStyle(
+        alignment: Alignment.centerLeft,
+        iconSize: WidgetStateProperty.all(16),
+        iconColor: WidgetStateProperty.all(Colors.red),
+        foregroundColor: WidgetStateProperty.all(
+          Colors.red,
+        ),
+      ),
     );
   }
 }

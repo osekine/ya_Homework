@@ -8,7 +8,7 @@ class ChoreListBodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final chores = ChoreListProvider.of(context).choreList;
+    final provider = ChoreListProvider.of(context);
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       sliver: DecoratedSliver(
@@ -18,20 +18,25 @@ class ChoreListBodyWidget extends StatelessWidget {
         ),
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
-            (context, index) => index < chores.length
-                ? ChoreWidget(chores[index])
+            (context, index) => index < provider.choreList.length
+                ? ChoreWidget(provider.choreList[index])
                 : GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: ((context) => const NewChoreScreen()),
-                      ),
-                    ),
+                    onTap: () async {
+                      await context.push('/new');
+                      provider.refresh();
+                    },
                     child: ListTile(
                       leading: const SizedBox(width: 0, height: 0),
-                      title: Text(S.of(context).newChore),
+                      title: Text(
+                        S.of(context).newChore,
+                        style: TextOption.getCustomStyle(
+                          style: TextStyles.body,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
                     ),
                   ),
-            childCount: chores.length + 1,
+            childCount: provider.choreList.length + 1,
           ),
         ),
       ),

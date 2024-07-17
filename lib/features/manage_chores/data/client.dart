@@ -1,7 +1,9 @@
-import '../../../utils/logs.dart';
+import 'package:to_do_app/core/models/chore.dart';
+
+import '../../../core/utils/logs.dart';
 import 'i_data_source.dart';
 
-class ClientModel<T> implements IDataSource<T> {
+class ClientModel<T extends Chore> implements IDataSource<T> {
   IDataSource<T>? _localStorage;
   IDataSource<T>? _networkStorage;
 
@@ -18,6 +20,7 @@ class ClientModel<T> implements IDataSource<T> {
 
   @override
   void add(T item) {
+    // data?.add(item);
     revision = revision + 1;
     Logs.log('Client rev: $revision');
     _localStorage?.add(item);
@@ -40,14 +43,14 @@ class ClientModel<T> implements IDataSource<T> {
     }
 
     //Проверка на совпадение версии. Если network отстает - синхронизируем с local и наоборот
-    if (networkData?.isNotEmpty ?? false) {
+    if (networkData != null) {
       if (_localStorage?.revision != null) {
         if (_localStorage!.revision > _networkStorage!.revision) {
           _networkStorage!.data = List.from(localData as Iterable);
-          _networkStorage!.sync();
+          await _networkStorage!.sync();
         } else {
           _localStorage!.data = List.from(networkData as Iterable);
-          _localStorage!.sync();
+          await _localStorage!.sync();
         }
         _localStorage!.revision = _networkStorage!.revision;
       }
@@ -56,6 +59,8 @@ class ClientModel<T> implements IDataSource<T> {
     } else {
       data = _localStorage?.data ?? [];
       revision = _localStorage?.revision ?? 0;
+      _networkStorage!.data = List.from(localData as Iterable);
+      await _networkStorage!.sync();
     }
 
     _networkStorage?.revision = revision;
@@ -66,18 +71,25 @@ class ClientModel<T> implements IDataSource<T> {
 
   @override
   void remove(T item, String id) async {
+    data?.remove(item);
     _localStorage?.remove(item, id);
     _networkStorage?.remove(item, id);
   }
 
   @override
-  void sync() {
-    _localStorage?.sync();
+  Future<void> sync() async {
+    await getData();
   }
 
   @override
   void update(T item, String id) {
+    data?[data!.indexOf(item)] = item;
     _localStorage?.update(item, id);
     _networkStorage?.update(item, id);
+  }
+
+  @override
+  Future<T?> getItem(String? id) async {
+    return _localStorage?.getItem(id) ?? _networkStorage?.getItem(id);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/features/manage_chores/domain/chore_list_provider.dart';
+import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
 
 class VisibilityWidget extends StatelessWidget {
   const VisibilityWidget({
