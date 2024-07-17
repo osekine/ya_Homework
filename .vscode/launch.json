@@ -10,6 +10,15 @@
             "type": "dart",
             "toolArgs": [
                 "--dart-define-from-file=dev_config.json",
+                "--dart-define",
+                "DEFINE_FIREBASE_ANDROID_API_KEY=AIzaSyBsyygV8jwJx0zhz_1wgGBY0U30bKqhNXw",
+                "--dart-define",
+                "DEFINE_FIREBASE_WEB_API_KEY=AIzaSyB3dI8GoymQ6O9NuH5s40BKbCU5ub9vFA0",
+                "--dart-define",
+                "DEFINE_FIREBASE_IOS_API_KEY=AIzaSyD6QjGl8uS4A_NH57k6ysLCEdPKaY9Aldg",
+                "--dart-define",
+                "DEFINE_FIREBASE_APP_ID=1:461688810503:android:21b845116a8b517be88ea2"
+
             ]
         },
         {
@@ -24,7 +33,15 @@
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
-                "--dart-define-from-file=release_config.json"
+                "--dart-define-from-file=release_config.json",
+                "--dart-define",
+                "DEFINE_FIREBASE_ANDROID_API_KEY=AIzaSyBsyygV8jwJx0zhz_1wgGBY0U30bKqhNXw",
+                "--dart-define",
+                "DEFINE_FIREBASE_WEB_API_KEY=AIzaSyB3dI8GoymQ6O9NuH5s40BKbCU5ub9vFA0",
+                "--dart-define",
+                "DEFINE_FIREBASE_IOS_API_KEY=AIzaSyD6QjGl8uS4A_NH57k6ysLCEdPKaY9Aldg",
+                "--dart-define",
+                "DEFINE_FIREBASE_APP_ID=1:461688810503:android:21b845116a8b517be88ea2"
             ]
         }
     ]

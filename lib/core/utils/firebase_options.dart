@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:to_do_app/core/constants/environment.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -41,8 +42,8 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB3dI8GoymQ6O9NuH5s40BKbCU5ub9vFA0',
-    appId: '1:461688810503:web:f0c51b27d8cf3ffce88ea2',
+    apiKey: EnvironmentDefines.fireBaseWebApiKey,
+    appId: EnvironmentDefines.fireBaseAppId,
     messagingSenderId: '461688810503',
     projectId: 'ya-homework',
     authDomain: 'ya-homework.firebaseapp.com',
@@ -51,16 +52,16 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBsyygV8jwJx0zhz_1wgGBY0U30bKqhNXw',
-    appId: '1:461688810503:android:21b845116a8b517be88ea2',
+    apiKey: EnvironmentDefines.fireBaseAndroidApiKey,
+    appId: EnvironmentDefines.fireBaseAppId,
     messagingSenderId: '461688810503',
     projectId: 'ya-homework',
     storageBucket: 'ya-homework.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD6QjGl8uS4A_NH57k6ysLCEdPKaY9Aldg',
-    appId: '1:461688810503:ios:64cdf21439db5453e88ea2',
+    apiKey: EnvironmentDefines.fireBaseIosApiKey,
+    appId: EnvironmentDefines.fireBaseAppId,
     messagingSenderId: '461688810503',
     projectId: 'ya-homework',
     storageBucket: 'ya-homework.appspot.com',

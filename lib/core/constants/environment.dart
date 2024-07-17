@@ -23,6 +23,14 @@ class EnvironmentDefines {
   static const String appSuffix = String.fromEnvironment('DEFINE_APP_SUFFIX');
   static const String appName = String.fromEnvironment('DEFINE_APP_NAME');
   static const String appVersion = String.fromEnvironment('DEFINE_APP_VERSION');
+  static const String fireBaseAndroidApiKey =
+      String.fromEnvironment('DEFINE_FIREBASE_ANDROID_API_KEY');
+  static const String fireBaseWebApiKey =
+      String.fromEnvironment('DEFINE_FIREBASE_WEB_API_KEY');
+  static const String fireBaseIosApiKey =
+      String.fromEnvironment('DEFINE_FIREBASE_IOS_API_KEY');
+  static const String fireBaseAppId =
+      String.fromEnvironment('DEFINE_FIREBASE_APP_ID');
   static late String apiKey;
   static late String baseUrl;
 }
