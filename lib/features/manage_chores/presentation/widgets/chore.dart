@@ -27,16 +27,20 @@ class _ChoreWidgetState extends State<ChoreWidget> {
       provider.removeChore(widget.chore);
       return Future.value(true);
     } else {
-      Logs.log('${widget.chore.hashCode} confirmed');
-      widget.chore.isDone = !widget.chore.isDone;
-      if (widget.chore.isDone) {
-        Analytics.doneChore();
-      } else {
-        Analytics.undoChore();
-      }
-      provider.updateChore(widget.chore);
+      _doneChore();
       return Future.value(false);
     }
+  }
+
+  void _doneChore() {
+    Logs.log('${widget.chore.hashCode} confirmed');
+    widget.chore.isDone = !widget.chore.isDone;
+    if (widget.chore.isDone) {
+      Analytics.doneChore();
+    } else {
+      Analytics.undoChore();
+    }
+    provider.updateChore(widget.chore);
   }
 
   @override
@@ -84,14 +88,17 @@ class _ChoreWidgetState extends State<ChoreWidget> {
             children: [
               Expanded(
                 flex: 1,
-                child: widget.chore.isDone
-                    ? const Icon(Icons.check_box, color: Colors.green)
-                    : Icon(
-                        Icons.check_box_outline_blank,
-                        color: widget.chore.priority == Priority.high
-                            ? Colors.red
-                            : Colors.grey,
-                      ),
+                child: GestureDetector(
+                  onTap: _doneChore,
+                  child: widget.chore.isDone
+                      ? const Icon(Icons.check_box, color: Colors.green)
+                      : Icon(
+                          Icons.check_box_outline_blank,
+                          color: widget.chore.priority == Priority.high
+                              ? Colors.red
+                              : Colors.grey,
+                        ),
+                ),
               ),
               Expanded(
                 flex: 5,
