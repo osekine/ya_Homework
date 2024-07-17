@@ -22,7 +22,7 @@ jobs:
           channel: "stable"
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos
-      - run: dart format --set-if-changed .
+      - run: dart format --set-exit-if-changed .
     timeout-minutes: 10
 
   test:
