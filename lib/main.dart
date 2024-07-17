@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -15,7 +14,6 @@ import 'package:to_do_app/core/models/chore.dart';
 import 'package:to_do_app/features/manage_chores/data/client.dart';
 import 'package:to_do_app/core/utils/logs.dart';
 
-import 'core/utils/firebase_options.dart';
 import 'generated/l10n.dart';
 
 void main() async {
