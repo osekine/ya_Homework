@@ -8,9 +8,10 @@ class PriorityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final state = NewChoreScreenState.of(context);
     return DropdownMenu(
-      onSelected: (value) =>
-          AddChoreProvider.of(context).changePriority(value ?? Priority.none),
+      onSelected: (value) => NewChoreScreenState.of(context)
+          .changePriority(value ?? state.priority),
       label: Text(S.of(context).importance),
       inputDecorationTheme: InputDecorationTheme(
         border: InputBorder.none,
@@ -27,7 +28,7 @@ class PriorityWidget extends StatelessWidget {
       ),
       trailingIcon:
           const Icon(Icons.arrow_drop_down, color: Colors.transparent),
-      initialSelection: Priority.none,
+      initialSelection: state.priority,
       dropdownMenuEntries: Priority.values.map((e) {
         if (e == Priority.high) {
           return DropdownMenuEntry(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/models/chore.dart';
-import 'package:to_do_app/features/manage_chores/data/client.dart';
+import 'package:to_do_app/features/manage_chores/data/i_data_source.dart';
+import 'package:to_do_app/core/models/chore.dart';
 
 /*
   Идея: переделать на InheritedModel, сделать три аспекта: title, visibility и list
@@ -9,7 +9,7 @@ import 'package:to_do_app/features/manage_chores/data/client.dart';
   visibility обновляется при изменении состояния isDoneVisible
 */
 class ChoreListProvider extends InheritedWidget {
-  final ClientModel<Chore> client;
+  final IDataSource<Chore> client;
   final bool isDoneVisible;
   final ScrollController scrollController;
   final VoidCallback onToggleVisible;
@@ -55,7 +55,19 @@ class ChoreListProvider extends InheritedWidget {
           ? scrollController.addListener(listener)
           : null;
 
-  void updateChore(Chore chore) => client.update(chore, chore.id);
+  void updateChore(Chore chore) {
+    chore.chagedAt = DateTime.now().millisecondsSinceEpoch;
+    client.update(chore, chore.id);
+    refresh();
+  }
 
-  void removeChore(Chore chore) => client.remove(chore, chore.id);
+  void removeChore(Chore chore) {
+    client.remove(chore, chore.id);
+    refresh();
+  }
+
+  void addChore(Chore chore) {
+    client.add(chore);
+    refresh();
+  }
 }

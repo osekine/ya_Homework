@@ -1,7 +1,10 @@
 part of 'i_data_source.dart';
 
-class LocalDataSource<T> implements IDataSource<T> {
-  final LocalStorageProxy<T> _proxy = LocalStorageProxy<T>();
+class LocalDataSource<T extends Chore> implements IDataSource<T> {
+  LocalDataSource() {
+    _proxy = GetIt.I<LocalStorageProxy<T>>();
+  }
+  late final LocalStorageProxy<T> _proxy;
 
   @override
   List<T>? data;
@@ -12,6 +15,8 @@ class LocalDataSource<T> implements IDataSource<T> {
   @override
   void add(T item) {
     data?.add(item);
+    data ??= [item];
+
     sync();
   }
 
@@ -31,7 +36,7 @@ class LocalDataSource<T> implements IDataSource<T> {
   }
 
   @override
-  void sync() {
+  Future<void> sync() async {
     Logs.log('LOCAL Syncing...');
     revision = revision + 1;
     _proxy.save(data ?? [], revision);
@@ -41,11 +46,24 @@ class LocalDataSource<T> implements IDataSource<T> {
   void update(T item, String id) {
     sync();
   }
+
+  @override
+  Future<T?> getItem(String? id) async {
+    if (id == null) return null;
+    data ?? await getData();
+    return data?.firstWhere((element) => element.id == id);
+  }
 }
 
-class LocalStorageProxy<T> {
+abstract class LocalStorageProxy<T> {
+  void save(List<T> list, int revision);
+  Future<(int?, List<T>?)> load();
+}
+
+class SharedPreferncesProxy<T> implements LocalStorageProxy<T> {
   final Future<SharedPreferences> _storage = SharedPreferences.getInstance();
 
+  @override
   void save(List<T> list, int revision) async {
     Logs.log('LOCAL Saving...');
     final storage = await _storage;
@@ -56,6 +74,7 @@ class LocalStorageProxy<T> {
     await storage.setInt('revision', revision);
   }
 
+  @override
   Future<(int?, List<T>?)> load() async {
     Logs.log('LOCAL Loading...');
     final storage = await _storage;

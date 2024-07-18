@@ -16,29 +16,29 @@ class _ChoseDateWidgetState extends State<ChoseDateWidget> {
 
   void chooseDate(bool value) async {
     if (!value || !canSwitch) {
-      setState(() {
-        date = null;
-      });
-      return;
-    }
-    final newDate = await showDatePicker(
-      context: context,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(DateTime.now().year + 1),
-    );
-    setState(() {
+      date = null;
+    } else {
+      final newDate = await showDatePicker(
+        context: context,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(DateTime.now().year + 1),
+      );
       date = newDate;
-      if (date != null) AddChoreProvider.of(context).changeDate(date!);
+    }
+    setState(() {
+      NewChoreScreenState.of(context).changeDate(date);
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    bool newCanSwitch = AddChoreProvider.of(context).hasChore;
+    bool newCanSwitch = NewChoreScreenState.of(context).hasChore;
     if (newCanSwitch != canSwitch) {
-      canSwitch = newCanSwitch;
-      chooseDate(false);
+      setState(() {
+        canSwitch = newCanSwitch;
+        date = NewChoreScreenState.of(context).dateTime;
+      });
     }
   }
 

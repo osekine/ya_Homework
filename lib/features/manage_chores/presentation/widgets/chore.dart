@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/constants/text.dart';
-import 'package:to_do_app/features/manage_chores/domain/chore_list_provider.dart';
-import 'package:to_do_app/utils/format.dart';
+import 'package:go_router/go_router.dart';
+import 'package:to_do_app/core/constants/text.dart';
+import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
+import 'package:to_do_app/core/utils/format.dart';
 
-import 'package:to_do_app/models/chore.dart';
-import 'package:to_do_app/utils/logs.dart';
+import 'package:to_do_app/core/models/chore.dart';
+import 'package:to_do_app/core/utils/logs.dart';
 
 class ChoreWidget extends StatefulWidget {
   final Chore chore;
@@ -16,77 +17,98 @@ class ChoreWidget extends StatefulWidget {
 
 class _ChoreWidgetState extends State<ChoreWidget> {
   double offset = 0;
+  late ChoreListProvider provider;
+
+  Future<bool?> _onConfirm(DismissDirection direction) async {
+    if (direction == DismissDirection.endToStart) {
+      Logs.log('${widget.chore.hashCode} deleted');
+      provider.removeChore(widget.chore);
+      return Future.value(true);
+    } else {
+      Logs.log('${widget.chore.hashCode} confirmed');
+      widget.chore.isDone = !widget.chore.isDone;
+      provider.updateChore(widget.chore);
+      return Future.value(false);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    provider = ChoreListProvider.of(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: ValueKey(widget.chore.hashCode),
-      confirmDismiss: (DismissDirection direction) async {
-        if (direction == DismissDirection.endToStart) {
-          Logs.log('${widget.chore.hashCode} deleted');
-          ChoreListProvider.of(context)
-            ..removeChore(widget.chore)
-            ..refresh();
-          return Future.value(true);
-        } else {
-          Logs.log('${widget.chore.hashCode} confirmed');
-          widget.chore.isDone = !widget.chore.isDone;
-          ChoreListProvider.of(context).updateChore(widget.chore);
-          ChoreListProvider.of(context).refresh();
-          return Future.value(false);
-        }
-      },
-      onUpdate: (details) {
-        offset = details.progress;
-        setState(() {});
-      },
-      dismissThresholds: const {
-        DismissDirection.endToStart: 0.2,
-        DismissDirection.startToEnd: 0.2,
-      },
-      background: Container(
-        color: Colors.green,
-        child: Align(
-          alignment: Alignment(((offset / 2 - 1)).clamp(-1, -0.9), 0),
-          child: const Icon(Icons.check),
-        ),
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(8),
+        topRight: Radius.circular(8),
       ),
-      secondaryBackground: Container(
-        color: Colors.red,
-        child: Align(
-          alignment: Alignment(((1 - offset / 2)).clamp(0.9, 1), 0),
-          child: const Icon(Icons.delete_outline),
+      child: Dismissible(
+        key: ValueKey(widget.chore.hashCode),
+        confirmDismiss: _onConfirm,
+        onUpdate: (details) {
+          offset = details.progress;
+          setState(() {});
+        },
+        dismissThresholds: const {
+          DismissDirection.endToStart: 0.2,
+          DismissDirection.startToEnd: 0.2,
+        },
+        background: Container(
+          color: Colors.green,
+          child: Align(
+            alignment: Alignment(((offset / 2 - 1)).clamp(-1, -0.9), 0),
+            child: const Icon(Icons.check),
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 1,
-              child: widget.chore.isDone
-                  ? const Icon(Icons.check_box, color: Colors.green)
-                  : Icon(
-                      Icons.check_box_outline_blank,
-                      color: widget.chore.priority == Priority.high
-                          ? Colors.red
-                          : Colors.grey,
-                    ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ChoreTextWidget(chore: widget.chore),
-                  if (widget.chore.deadline != null)
-                    Text(getFormattedDate(widget.chore.deadline!)),
-                ],
+        secondaryBackground: Container(
+          color: Colors.red,
+          child: Align(
+            alignment: Alignment(((1 - offset / 2)).clamp(0.9, 1), 0),
+            child: const Icon(Icons.delete_outline),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 16.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 1,
+                child: widget.chore.isDone
+                    ? const Icon(Icons.check_box, color: Colors.green)
+                    : Icon(
+                        Icons.check_box_outline_blank,
+                        color: widget.chore.priority == Priority.high
+                            ? Colors.red
+                            : Colors.grey,
+                      ),
               ),
-            ),
-            const Expanded(flex: 1, child: Icon(Icons.info_outline)),
-          ],
+              Expanded(
+                flex: 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _ChoreTextWidget(chore: widget.chore),
+                    if (widget.chore.deadline != null)
+                      Text(getFormattedDate(widget.chore.deadline!)),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: () async {
+                    await context.push('/details/${widget.chore.id}');
+                    provider.refresh();
+                  },
+                  child: const Icon(Icons.info_outline),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

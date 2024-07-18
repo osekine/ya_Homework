@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/constants/text.dart';
-import 'package:to_do_app/features/manage_chores/domain/chore_list_provider.dart';
+import 'package:to_do_app/core/constants/text.dart';
+import 'package:to_do_app/features/manage_chores/presentation/inherits/chore_list_provider.dart';
 import 'package:to_do_app/generated/l10n.dart';
 import 'visibility_widget.dart';
 
